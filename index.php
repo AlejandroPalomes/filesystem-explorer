@@ -6,6 +6,6 @@
     <title>Local FileSystem</title>
 </head>
 <body>
-    
+    <?php include 'src/php/navdir.php'?>
 </body>
 </html>
