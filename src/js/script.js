@@ -1,29 +1,21 @@
-// const axios = require('axios').default;
-// require('bootstrap');
-
-
-var oReq = new XMLHttpRequest();
-
-oReq.onload = function () {
-    reqListener(JSON.parse(this.responseText));
-};
-
-oReq.open("get", "src/php/navdir.php", true);
-
-oReq.send();
-
-let sideMenu = document.querySelector('#sideMenu');
-
-function reqListener(a) {
-    console.log(a)
-    let array = Object.keys(a);
-    array.forEach(e => {
-        if(!(e=='0')){
-            console.log(typeof e)
-            let li = document.createElement('li');
-            li.textContent = a.e;
-
-            sideMenu.appendChild(li);
-        }
-    });
+function Directory (content){
+    this.type = 'folder';
+    this.content = content;
+    this.size = getFolderSize(this.content);
 }
+
+function getFolderSize(content){
+    return 100;
+}
+
+axios({
+    method: 'get',
+    url: 'src/php/navdir.php',
+}).then(function (response) {
+    console.log(response.data)
+    let key = Object.keys(response.data);
+    key.forEach(element => {
+        let folder = new Directory(response.data[element]);
+        // console.log(folder)
+    });
+});
