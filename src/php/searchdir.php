@@ -19,7 +19,7 @@
 
                     $result[$value] = $folder;
                 }
-                else{
+                elseif($value !== '.DS_Store'){
                     $newDir = $dir . '/' . $value;
                     $file = new stdClass();
                     $file->name = $value;

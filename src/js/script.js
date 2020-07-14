@@ -10,12 +10,26 @@ function getFolderSize(content){
 
 axios({
     method: 'get',
-    url: 'src/php/navdir.php',
-}).then(function (response) {
-    console.log(response.data)
-    let key = Object.keys(response.data);
-    key.forEach(element => {
-        let folder = new Directory(response.data[element]);
+    url: 'src/php/searchdir.php',
+}).then((response)=>iterateFolders(response.data));
+
+
+function iterateFolders(folder){
+    let key = Object.keys(folder);
+    key.forEach(e => {
+        if(folder[e].type === 'directory'){
+            let li = document.createElement('li');
+            li.innerHTML = `<span>${folder[e].name}</span>`;
+
+            // li.textContent = folder[e].name;
+
+            document.querySelector('#sideMenu').append(li);
+            iterateFolders(folder[e].content);
+            // console.log(folder[e].content)
+        }else{
+            console.log(folder[e].name);
+        }
+        // let folder = new Directory(folder[e]);
         // console.log(folder)
     });
-});
+}
