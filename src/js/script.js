@@ -5,6 +5,9 @@ axios({
 }).then((response)=>{
     document.querySelector('#sideMenu').innerHTML = '';
     iterateFolders(response.data);
+    document.querySelectorAll('[data-path]').forEach(e=>{
+        e.addEventListener('click', link=> printContent(link.target));
+    });
 });
 
 function iterateFolders(folder, parent){
@@ -60,6 +63,22 @@ function iterateFolders(folder, parent){
         }else{
             //console.log(folder[e].name);
         }
+    });
+}
+
+function printContent(folder){
+    const finalPath = folder.dataset.path.replace('/', '').replace(/\./g, '');
+    console.log(finalPath);
+
+    axios({
+        method: 'POST',
+        url: 'src/php/printFolder.php',
+    }).then((response)=>{
+        document.querySelector('#sideMenu').innerHTML = '';
+        iterateFolders(response.data);
+        document.querySelectorAll('[data-path]').forEach(e=>{
+            e.addEventListener('click', link=> printContent(link.target));
+        });
     });
 }
 
