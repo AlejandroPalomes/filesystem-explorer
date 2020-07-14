@@ -15,7 +15,8 @@
                     $folder->type = mime_content_type($newDir);
                     $folder->size = filesize($newDir);
                     $folder->mtime = filemtime($newDir);
-                    $folder->content = dirToArray($dir . '/' . $value);
+                    $folder->content = dirToArray($newDir);
+                    $folder->parent = $dir;
 
                     $result[$value] = $folder;
                 }
@@ -27,6 +28,7 @@
                     $file->type = mime_content_type($newDir);
                     $file->size = filesize($newDir);
                     $file->mtime = filemtime($newDir);
+                    $file->parent = $dir;
 
                     $result[] = $file;
                     // $result[] = $value;
