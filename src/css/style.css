@@ -8,7 +8,7 @@
     width: 100vw;
 }
 
-.sideMenu{
+.menu{
     width: 30%;
     height: 100%;
     border: 1px solid red;
@@ -16,4 +16,18 @@
 
 li{
     list-style: none;
+}
+
+#contentWindow{
+    width: 70%;
+    border: 1px solid blue;
+}
+
+.card{
+    width: 100px;
+    height: 120px;
+}
+
+.card:hover{
+    cursor: pointer;
 }

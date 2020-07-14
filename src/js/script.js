@@ -8,7 +8,6 @@ axios({
 });
 
 function iterateFolders(folder, parent){
-
     let key = Object.keys(folder);
     key.forEach(e => {
         if(folder[e].type === 'directory'){
@@ -63,3 +62,5 @@ function iterateFolders(folder, parent){
         }
     });
 }
+
+
