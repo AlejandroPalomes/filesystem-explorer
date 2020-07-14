@@ -1,21 +1,14 @@
-// function Directory (content){
-//     this.type = 'folder';
-//     this.content = content;
-//     this.size = getFolderSize(this.content);
-// }
-
-// function getFolderSize(content){
-//     return 100;
-// }
 
 axios({
     method: 'get',
     url: 'src/php/searchdir.php',
-}).then((response)=>iterateFolders(response.data));
-
+}).then((response)=>{
+    document.querySelector('#sideMenu').innerHTML = '';
+    iterateFolders(response.data);
+});
 
 function iterateFolders(folder, parent){
-    // document.querySelector('#sideMenu').innerHTML = '';
+
     let key = Object.keys(folder);
     key.forEach(e => {
         if(folder[e].type === 'directory'){
@@ -37,13 +30,10 @@ function iterateFolders(folder, parent){
                     <a class="nav-link" data-path="${folder[e].path}" ${(hasContent) ? ' data-toggle="collapse" href="#'+ newId +'" role="button" aria-expanded="false" aria-controls="'+ newId +'"' : 'href="#"'}>${folder[e].name}</a>
                 `;
 
-                // li2.innerHTML = `
-                // <ul class="collapse" id="${newId}" data-father="${folder[e].path}"></ul>
-                // `
                 li2.id = newId;
                 li2.className = 'collapse';
                 li2.innerHTML = `
-                <ul data-father="${folder[e].path}"></ul>
+                <ul class="ml-4" data-father="${folder[e].path}"></ul>
                 `
                 document.querySelector('#sideMenu').append(li);
                 if(hasContent) document.querySelector('#sideMenu').append(li2);
@@ -52,26 +42,18 @@ function iterateFolders(folder, parent){
                 li3.dataset['test'] = newId;
 
                 if(hasContent){
-                    li.className = `nav-item dropdwon pl-4`;
+                    li.className = `nav-item dropdwon`;
                     li.innerHTML = `
                         <a class="nav-link" data-path="${folder[e].path}" ${(hasContent) ? ' data-toggle="collapse" href="#' + newId + '" role="button" aria-expanded="false" aria-controls="'+ newId +'"' : 'href="#"'}>${folder[e].name}</a>
                     `;
 
                     li3.id = newId;
                     li3.className = 'collapse';
-                    // li3.innerHTML = `
-                    // <ul class="collapse" id="${newId}" data-father="${folder[e].path}"></ul>
-                    // `
-                    li3.innerHTML = `
-                    <ul data-father="${folder[e].path}"></ul>
-                    `
+                    li3.innerHTML = `<ul class="ml-4" data-father="${folder[e].path}"></ul>`
                     document.querySelector(`[data-father="${parent}"]`).append(li);
                     document.querySelector(`[data-father="${parent}"]`).append(li3);
-                    // document.querySelector('#sideMenu').append(li3);
                 }else{
-                    li3.className = 'dropdown-item pl-5';
                     li3.innerHTML = `<a class="nav-link" data-path="${folder[e].path}" href="#">${folder[e].name}</a>`;
-                    // li3.dataset['path'] = folder[e].path;
                     document.querySelector(`[data-father="${parent}"]`).append(li3);
                 }
             }
@@ -79,6 +61,5 @@ function iterateFolders(folder, parent){
         }else{
             //console.log(folder[e].name);
         }
-        // let folder = new Directory(folder[e]);
     });
 }
