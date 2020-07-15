@@ -67,7 +67,6 @@ function iterateFolders(folder, parent){
 }
 
 function requestContent(folder){
-    const finalPath = folder.dataset.path.replace('/', '').replace(/\./g, '').replace('/', '');
     const form = new FormData();
 
     form.path = folder.dataset.path;
@@ -81,7 +80,29 @@ function requestContent(folder){
     }).then((response)=>{
         document.querySelector('#folderDisplay').innerHTML = '';
         document.querySelector('#archiveDisplay').innerHTML = '';
+        document.querySelector('#breadcrumb').dataset.fullPath = folder.dataset.path;
+        printBreadcrumb(folder.dataset.path);
         printFolder(response.data);
+    });
+}
+
+function requestFileInfo(path){
+    const form = new FormData();
+
+    form.path = path;
+
+    axios({
+        method: 'POST',
+        url: 'src/php/fileInfo.php',
+        data:{
+            form
+        }
+    }).then((response)=>{
+        // document.querySelector('#folderDisplay').innerHTML = '';
+        // document.querySelector('#archiveDisplay').innerHTML = '';
+        // document.querySelector('#breadcrumb').dataset.fullPath = folder.dataset.path;
+        console.log(response.data)
+        
     });
 }
 
@@ -89,10 +110,11 @@ function requestContent(folder){
 function printFolder(folder){
     let key = Object.keys(folder);
     key.forEach(e => {
-        console.log(e)
-        console.log(folder[e].type);
+        // console.log(e)
+        // console.log(folder[e].type);
         const div = document.createElement('div');
         div.className = 'card m-2 d-flex justify-content-center';
+        div.dataset.path = folder[e].path;
         let imgPath = '';
         let imgSize = '';
 
@@ -106,8 +128,7 @@ function printFolder(folder){
             case 'audio/mp3':
             case 'audio/mpeg': imgPath = 'mp3.png'; break;
 
-            default:
-                break;
+            default: imgPath = 'unknown.png'; break;
         }
 
         div.innerHTML = `
@@ -119,5 +140,38 @@ function printFolder(folder){
 
         // document.querySelector('#folderDisplay').append(div);
         (folder[e].type === 'directory') ? document.querySelector('#folderDisplay').append(div) : document.querySelector('#archiveDisplay').append(div);
+    });
+
+    const files = document.querySelectorAll('#fileDisplay .card');
+    files.forEach( e=>{
+        e.addEventListener('dblclick', ()=>console.log('ho'));
+        e.addEventListener('click', (e)=>requestFileInfo(e.currentTarget.dataset.path));
+    });
+}
+
+function printBreadcrumb(path){
+    const elements = path.replace('/', '').replace(/\./g, '').replace('/', '').split('/');
+    const breadcrumb = document.querySelector('#breadcrumb-ol');
+    let relativePath = '../..'
+    breadcrumb.innerHTML = '';
+
+    elements.forEach((e, i)=>{
+        const li = document.createElement('li');
+        relativePath += ('/' + e);
+        li.className = 'breadcrumb-item';
+        if(i+1 != elements.length) li.classList.add('breadcrumb__link');
+        li.dataset.path =relativePath;
+        li.textContent = e;
+
+        breadcrumb.append(li);
+    })
+
+    const liElements = document.querySelectorAll('#breadcrumb-ol li');
+    liElements.forEach((e, i)=>{
+        if(i+1 < liElements.length){
+            e.addEventListener('click', e=>{
+                requestContent(e.target)
+            })
+        }
     });
 }
