@@ -132,9 +132,11 @@ h5.card-title{
 }
 
 .infoPreview{
+    height: 40%;
     border: 1px solid greenyellow;
 }
 .infoBody{
+    height: 60%;
     border: 1px solid greenyellow;
 }
 
