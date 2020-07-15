@@ -6,7 +6,7 @@ axios({
     document.querySelector('#sideMenu').innerHTML = '';
     iterateFolders(response.data);
     document.querySelectorAll('[data-path]').forEach(e=>{
-        e.addEventListener('click', link=> printContent(link.target));
+        e.addEventListener('click', link=> requestContent(link.target));
     });
 });
 
@@ -66,12 +66,10 @@ function iterateFolders(folder, parent){
     });
 }
 
-function printContent(folder){
+function requestContent(folder){
     const finalPath = folder.dataset.path.replace('/', '').replace(/\./g, '').replace('/', '');
-    //console.log(finalPath);
     const form = new FormData();
 
-    // form.path = finalPath;
     form.path = folder.dataset.path;
 
     axios({
