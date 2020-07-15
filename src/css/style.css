@@ -1,44 +1,48 @@
-*{
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap');
+
+* {
     padding: 0;
     margin: 0;
+    font-family: Poppins,sans-serif;
 }
-body{
+
+body {
     margin: 0;
     min-height: 100vh;
 }
 
-.main{
+.main {
     height: 90vh;
     width: 100vw;
-    
+
 }
 
-.menu{
+.menu {
     width: 20%;
-    
+
 }
 
-li{
+li {
     list-style: none;
 }
 
-#contentWindow{
+#contentWindow {
     width: 80%;
 }
 
-.card{
+.card {
     width: 100px;
     height: 120px;
 }
 
-.card:hover{
+.card:hover {
     cursor: pointer;
 }
 
 /*___ Navbar___*/
 
 .form-control {
-    font-size: 14px!important;
+    font-size: 14px !important;
     display: block;
     width: 100%;
     height: 2.5vw !important;
@@ -51,21 +55,21 @@ li{
     background-clip: padding-box;
     border: 0px solid #ced4da !important;
     border-radius: .25rem;
-    transition: border-color .15s ease-in-out,box-shadow .15s ease-in-out;
+    transition: border-color .15s ease-in-out, box-shadow .15s ease-in-out;
 }
 
-.bg-navbar{
+.bg-navbar {
     background-color: #0455BF !important;
 }
 
-.logo{
+.logo {
     height: auto;
-    width:150px;
+    width: 150px;
 }
 
 
 /*____ Footer___*/
-footer{
+footer {
     position: absolute;
     bottom: 0;
     width: 100%;
@@ -74,8 +78,33 @@ footer{
     font-size: 14px;
     background-color: #EAF0F8;
 }
-img.icon-xxss{
+
+img.icon-xxss {
     height: auto;
     width: 25px;
     padding: 2px 5px;
+}
+
+/*___Button modal___*/
+
+.button_principal {
+    background-color: #0455BF !important;
+    height: 40px;
+    width: 40px;
+    border-radius: 50%;
+    margin: 30px;
+
+    border: none;
+    color: white !important;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+.btn-modal{
+    color: white !important;
+    font-size: 19.5px;
+
 }
