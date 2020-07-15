@@ -2,16 +2,20 @@
     padding: 0;
     margin: 0;
 }
+body{
+    margin: 0;
+    min-height: 100vh;
+}
 
 .main{
-    height: 100vh;
+    height: 90vh;
     width: 100vw;
+    
 }
 
 .menu{
-    width: 30%;
-    height: 100%;
-    border: 1px solid red;
+    width: 20%;
+    
 }
 
 li{
@@ -19,8 +23,7 @@ li{
 }
 
 #contentWindow{
-    width: 70%;
-    border: 1px solid blue;
+    width: 80%;
 }
 
 .card{
@@ -30,4 +33,49 @@ li{
 
 .card:hover{
     cursor: pointer;
+}
+
+/*___ Navbar___*/
+
+.form-control {
+    font-size: 14px!important;
+    display: block;
+    width: 100%;
+    height: 2.5vw !important;
+    padding: 1vw 2vw !important;
+    font-size: 1rem;
+    font-weight: 400;
+    line-height: 1.5;
+    color: #495057;
+    background-color: #fff;
+    background-clip: padding-box;
+    border: 0px solid #ced4da !important;
+    border-radius: .25rem;
+    transition: border-color .15s ease-in-out,box-shadow .15s ease-in-out;
+}
+
+.bg-navbar{
+    background-color: #0455BF !important;
+}
+
+.logo{
+    height: auto;
+    width:150px;
+}
+
+
+/*____ Footer___*/
+footer{
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    height: 60px;
+    line-height: 60px;
+    font-size: 14px;
+    background-color: #EAF0F8;
+}
+img.icon-xxss{
+    height: auto;
+    width: 25px;
+    padding: 2px 5px;
 }
