@@ -12,7 +12,12 @@
                 $file = new stdClass();
                 $file->name = $value;
                 $file->path = $newDir;
-                $file->type = mime_content_type($newDir);
+                $extension = pathinfo($newDir, PATHINFO_EXTENSION);
+                if(!strlen($extension)){
+                    $file->type = mime_content_type($newDir);
+                }else{
+                    $file->type = $extension;
+                }
                 // $file->size = filesize($newDir);
                 // $file->mtime = filemtime($newDir);
                 // $file->content = dirToArray($newDir);

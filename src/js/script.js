@@ -118,8 +118,8 @@ function requestFileInfo(path) {
 function printFolder(folder) {
     let key = Object.keys(folder);
     key.forEach(e => {
-        // console.log(e)
-        // console.log(folder[e].type);
+        console.log(e)
+        console.log(folder[e].type);
         const div = document.createElement('div');
         div.className = 'card m-2 d-flex justify-content-center';
         div.dataset.path = folder[e].path;
@@ -188,14 +188,28 @@ function checkImgSrc(type){
 
     switch (type) {
         case 'directory': finalPath = 'folder.png'; break;
-        case 'image/png': finalPath = 'png.png'; break;
-        case 'image/jpg':
-        case 'image/jpeg': finalPath = 'jpg.png'; break;
-        case 'application/vnd.openxmlformats-officedocument.wordprocessingml.document': finalPath = 'doc.png'; break;
-        case 'application/zip': finalPath = 'zip.png'; break;
-        case 'audio/mp3':
-        case 'audio/mpeg': finalPath = 'mp3.png'; break;
-        case 'video/mp4': finalPath = 'mp4.png'; break;
+        case 'PNG':
+        case 'png': finalPath = 'png.png'; break;
+        case 'jpg':
+        case 'JPG':
+        case 'JPEG':
+        case 'jpeg': finalPath = 'jpg.png'; break;
+        case 'svg+xml':
+        case 'svg': finalPath = 'svg.png'; break;
+        case 'docx':
+        case 'doc': finalPath = 'doc.png'; break;
+        case 'ppt':
+        case 'pptx': finalPath = 'ppt.png'; break;
+        case 'odt': finalPath = 'odt.png'; break;
+        case 'zip': finalPath = 'zip.png'; break;
+        case 'mp3':
+        case 'mpeg': finalPath = 'mp3.png'; break;
+        case 'mp4': finalPath = 'mp4.png'; break;
+        case 'rar': finalPath = 'rar.png'; break;
+        case 'pdf': finalPath = 'pdf.png'; break;
+        case 'csv': finalPath = 'csv.png'; break;
+        case 'txt': finalPath = 'txt.png'; break;
+        case 'exe': finalPath = 'exe.png'; break;
 
         default: finalPath = 'unknown.png'; break;
     }

@@ -7,7 +7,14 @@
         $result = new stdClass();
         $result->name = basename($route);
         $result->path = $route;
-        $result->type = mime_content_type($route);
+
+        $extension = pathinfo($route, PATHINFO_EXTENSION);
+        if(!strlen($extension)){
+            $result->type = mime_content_type($route);
+        }else{
+            $result->type = $extension;
+        }
+        
         $result->size = filesize($route);
         // $date = new dateTime(filemtime($route));
         $result->mtime = date ("F d Y, H:i", filemtime($route));
