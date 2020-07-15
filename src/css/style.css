@@ -53,6 +53,7 @@ li {
     width: 35px;
     border-radius: 50%;
 
+    margin-top: 10px;
     border: none;
     color: white !important;
     text-align: center;
@@ -132,8 +133,8 @@ footer {
 
 img.icon-xxss {
     height: auto;
-    width: 25px;
-    padding: 2px 5px;
+    width: 39px;
+    padding: 0px 10px;
 }
 
 /*___Button modal___*/
@@ -142,4 +143,10 @@ img.icon-xxss {
 .btn-modal{
     color: white !important;
     font-size: 19.5px;
+}
+
+.sidebar{
+    margin-top:10px;
+    margin-left: 20px;
+    
 }

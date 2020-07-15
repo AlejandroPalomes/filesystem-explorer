@@ -77,7 +77,7 @@ function requestContent(folder) {
         data: {
             form
         }
-    }).then((response)=>{
+    }).then((response) => {
         document.querySelector('#folderDisplay').innerHTML = '';
         document.querySelector('#archiveDisplay').innerHTML = '';
         printFolder(response.data);
@@ -96,14 +96,26 @@ function printFolder(folder) {
         let imgSize = '';
 
         switch (folder[e].type) {
-            case 'directory': imgPath = 'folder.png'; break;
-            case 'image/png': imgPath = 'png.png'; break;
+            case 'directory':
+                imgPath = 'folder.png';
+                break;
+            case 'image/png':
+                imgPath = 'png.png';
+                break;
             case 'image/jpg':
-            case 'image/jpeg': imgPath = 'jpg.png'; break;
-            case 'application/vnd.openxmlformats-officedocument.wordprocessingml.document': imgPath = 'doc.png'; break;
-            case 'application/zip': imgPath = 'zip.png'; break;
+            case 'image/jpeg':
+                imgPath = 'jpg.png';
+                break;
+            case 'application/vnd.openxmlformats-officedocument.wordprocessingml.document':
+                imgPath = 'doc.png';
+                break;
+            case 'application/zip':
+                imgPath = 'zip.png';
+                break;
             case 'audio/mp3':
-            case 'audio/mpeg': imgPath = 'mp3.png'; break;
+            case 'audio/mpeg':
+                imgPath = 'mp3.png';
+                break;
 
             default:
                 break;
@@ -117,14 +129,14 @@ function printFolder(folder) {
         `;
 
         // document.querySelector('#folderDisplay').append(div);
-        (folder[e].type === 'directory') ? document.querySelector('#folderDisplay').append(div) : document.querySelector('#archiveDisplay').append(div);
+        (folder[e].type === 'directory') ? document.querySelector('#folderDisplay').append(div): document.querySelector('#archiveDisplay').append(div);
     });
 }
 
-
+// Create Folder
 function createFolder() {
     let dirdata = new FormData();
-    dirdata.set('dir_name', 'test1' );
+    dirdata.set('dir_name', 'test1');
 
 
     axios({
@@ -140,5 +152,9 @@ function createFolder() {
 
 
 }
+//Submit Form
+function submitFolder() {
+    document.querySelector('#createFolderForm').submit();
+}
 
-document.querySelector('.prueba1').addEventListener('click',createFolder);
+document.querySelector('.createFolderButton').addEventListener('click', submitFolder);
