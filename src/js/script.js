@@ -89,12 +89,26 @@ function printFolder(folder){
     let key = Object.keys(folder);
     key.forEach(e => {
         console.log(e)
-        let div = document.createElement('div');
-        div.className = 'card m-2'
+        const div = document.createElement('div');
+        div.className = 'card m-2 d-flex justify-content-center';
+        let imgPath = '';
+        let imgSize = '';
+        console.log(folder[e].type);
+
+        switch (folder[e].type) {
+            case 'image/png': imgPath = 'png.png'; break;
+            case 'image/jpg':
+            case 'image/jpeg': imgPath = 'jpg.png'; break;
+            case 'application/vnd.openxmlformats-officedocument.wordprocessingml.document': imgPath = 'doc.png'; break;
+            case 'directory': imgPath = 'folder.png'; break;
+        
+            default:
+                break;
+        }
 
         div.innerHTML = `
-            <img class="card-img-top" src="" alt="Card image cap">
-            <div class="card-body">
+            <img class="mx-auto mt-2" src="src/img/icons/${imgPath}" height="65px" alt="Card image cap">
+            <div class="card-body mx-auto mt-2">
                 <h5 class="card-title">${folder[e].name}</h5>
             </div>
         `

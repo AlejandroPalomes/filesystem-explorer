@@ -25,9 +25,18 @@ li{
 
 .card{
     width: 100px;
-    height: 120px;
+    height: 110px;
 }
 
 .card:hover{
     cursor: pointer;
+}
+
+.card-body{
+    padding: 3px;
+}
+
+h5.card-title{
+    color: rgb(47, 47, 47);
+    font-size:14px !important;
 }
