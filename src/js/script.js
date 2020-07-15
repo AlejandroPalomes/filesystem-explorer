@@ -16,7 +16,7 @@ function loadSideMenu(){
 function iterateFolders(folder, parent){
     let key = Object.keys(folder);
     key.forEach(e => {
-        if(folder[e].type === 'directory'){
+        if (folder[e].type === 'directory') {
             let newId = folder[e].path.replace(/\//g, '_').replace(/\./g, '');
             let contents;
             hasContent = false;
@@ -29,7 +29,7 @@ function iterateFolders(folder, parent){
             li.dataset['test'] = newId;
             li2.className = 'nav-item';
 
-            if(!parent){
+            if (!parent) {
                 li.className = `nav-item ${(hasContent) ? 'dropdwon' : ''}`;
                 li.innerHTML = `
                     <a class="nav-link" data-path="${folder[e].path}" ${(hasContent) ? ' data-toggle="collapse" href="#'+ newId +'" role="button" aria-expanded="false" aria-controls="'+ newId +'"' : 'href="#"'}>${folder[e].name}</a>
@@ -41,12 +41,12 @@ function iterateFolders(folder, parent){
                 <ul class="ml-4" data-father="${folder[e].path}"></ul>
                 `
                 document.querySelector('#sideMenu').append(li);
-                if(hasContent) document.querySelector('#sideMenu').append(li2);
-            }else{
+                if (hasContent) document.querySelector('#sideMenu').append(li2);
+            } else {
                 let li3 = document.createElement('li');
                 li3.dataset['test'] = newId;
 
-                if(hasContent){
+                if (hasContent) {
                     li.className = `nav-item dropdwon`;
                     li.innerHTML = `
                         <a class="nav-link" data-path="${folder[e].path}" ${(hasContent) ? ' data-toggle="collapse" href="#' + newId + '" role="button" aria-expanded="false" aria-controls="'+ newId +'"' : 'href="#"'}>${folder[e].name}</a>
@@ -57,13 +57,13 @@ function iterateFolders(folder, parent){
                     li3.innerHTML = `<ul class="ml-4" data-father="${folder[e].path}"></ul>`
                     document.querySelector(`[data-father="${parent}"]`).append(li);
                     document.querySelector(`[data-father="${parent}"]`).append(li3);
-                }else{
+                } else {
                     li3.innerHTML = `<a class="nav-link" data-path="${folder[e].path}" href="#">${folder[e].name}</a>`;
                     document.querySelector(`[data-father="${parent}"]`).append(li3);
                 }
             }
             iterateFolders(folder[e].content, folder[e].path);
-        }else{
+        } else {
             //console.log(folder[e].name);
         }
     });
@@ -77,10 +77,10 @@ function requestContent(folder, init = true){
     axios({
         method: 'POST',
         url: 'src/php/printFolder.php',
-        data:{
+        data: {
             form
         }
-    }).then((response)=>{
+    }).then((response) => {
         document.querySelector('#folderDisplay').innerHTML = '';
         document.querySelector('#archiveDisplay').innerHTML = '';
         document.querySelector('#breadcrumb').dataset.path = form.path;
@@ -90,7 +90,7 @@ function requestContent(folder, init = true){
     });
 }
 
-function requestFileInfo(path){
+function requestFileInfo(path) {
     const form = new FormData();
 
     form.path = path;
@@ -98,7 +98,7 @@ function requestFileInfo(path){
     axios({
         method: 'POST',
         url: 'src/php/fileInfo.php',
-        data:{
+        data: {
             form
         }
     }).then((response)=>{
@@ -115,7 +115,7 @@ function requestFileInfo(path){
 }
 
 
-function printFolder(folder){
+function printFolder(folder) {
     let key = Object.keys(folder);
     key.forEach(e => {
         // console.log(e)
@@ -148,18 +148,26 @@ function printFolder(folder){
     });
 }
 
-function printBreadcrumb(path){
+
+const files = document.querySelectorAll('#fileDisplay .card');
+files.forEach(e => {
+    e.addEventListener('dblclick', () => console.log('ho'));
+    e.addEventListener('click', (e) => requestFileInfo(e.currentTarget.dataset.path));
+});
+
+
+function printBreadcrumb(path) {
     const elements = path.replace('/', '').replace(/\./g, '').replace('/', '').split('/');
     const breadcrumb = document.querySelector('#breadcrumb-ol');
     let relativePath = '../..'
     breadcrumb.innerHTML = '';
 
-    elements.forEach((e, i)=>{
+    elements.forEach((e, i) => {
         const li = document.createElement('li');
         relativePath += ('/' + e);
         li.className = 'breadcrumb-item';
-        if(i+1 != elements.length) li.classList.add('breadcrumb__link');
-        li.dataset.path =relativePath;
+        if (i + 1 != elements.length) li.classList.add('breadcrumb__link');
+        li.dataset.path = relativePath;
         li.textContent = e;
 
         breadcrumb.append(li);
@@ -194,3 +202,39 @@ function checkImgSrc(type){
 
     return finalPath;
 }
+
+// Create Folder
+function createFolder() {
+    let dirdata = new FormData();
+    let folderName = document.getElementById('folderName').value;
+    let folderPath = document.querySelector('#breadcrumb').dataset.path;
+    dirdata.folderName = folderName;
+    dirdata.folderPath = folderPath;
+
+    axios({
+        method: 'POST',
+        url: 'src/php/createFolder.php',
+        data: {
+            dirdata
+        }
+    }).then((response) => {
+        console.log(response.data);
+        console.log(folderPath + '/' + folderName);
+        if(response.data == folderPath + '/' + folderName){
+            requestContent(document.querySelector('#breadcrumb'));
+            //amagar el modal
+        }else{
+            //posar missatge al modal de error
+            alert('Failed to create');
+        }
+    });
+}
+
+
+//Submit Form
+function submitFolder() {
+    document.getElementById('folderPath').value = document.querySelector('#breadcrumb').dataset.path;
+    document.querySelector('#createFolderForm').submit();
+}
+
+document.querySelector('.createFolderButton').addEventListener('click', createFolder);
