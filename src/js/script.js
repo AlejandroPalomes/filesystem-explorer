@@ -1,15 +1,18 @@
+loadSideMenu();
+requestContent('../../root');
 
-axios({
+function loadSideMenu(){
+    axios({
     method: 'get',
     url: 'src/php/searchdir.php',
-}).then((response)=>{
-    document.querySelector('#sideMenu').innerHTML = '';
-    iterateFolders(response.data);
-    document.querySelectorAll('[data-path]').forEach(e=>{
-        e.addEventListener('click', link=> printContent(link.target));
+    }).then((response)=>{
+        document.querySelector('#sideMenu').innerHTML = '';
+        iterateFolders(response.data);
+        document.querySelectorAll('#sideMenu [data-path]').forEach(e=>{
+            e.addEventListener('click', link=> requestContent(link.target, false));
+        });
     });
-});
-
+}
 function iterateFolders(folder, parent){
     let key = Object.keys(folder);
     key.forEach(e => {
@@ -66,13 +69,10 @@ function iterateFolders(folder, parent){
     });
 }
 
-function printContent(folder){
-    const finalPath = folder.dataset.path.replace('/', '').replace(/\./g, '').replace('/', '');
-    //console.log(finalPath);
+function requestContent(folder, init = true){
     const form = new FormData();
 
-    // form.path = finalPath;
-    form.path = folder.dataset.path;
+    init ? form.path = folder : form.path = folder.dataset.path;
 
     axios({
         method: 'POST',
@@ -81,8 +81,36 @@ function printContent(folder){
             form
         }
     }).then((response)=>{
-        document.querySelector('#contentWindow').innerHTML = '';
+        document.querySelector('#folderDisplay').innerHTML = '';
+        document.querySelector('#archiveDisplay').innerHTML = '';
+        document.querySelector('#breadcrumb').dataset.path = form.path;
+        // printBreadcrumb(folder.dataset.path);
+        printBreadcrumb(form.path);
         printFolder(response.data);
+    });
+}
+
+function requestFileInfo(path){
+    const form = new FormData();
+
+    form.path = path;
+
+    axios({
+        method: 'POST',
+        url: 'src/php/fileInfo.php',
+        data:{
+            form
+        }
+    }).then((response)=>{
+        document.querySelector('#infoPreview-img').src = 'src/img/icons/' + checkImgSrc(response.data.type);
+        document.querySelector('#infoBody-name').innerText = response.data.name;
+        document.querySelector('#infoBody-type').innerText = response.data.type;
+        document.querySelector('#infoBody-mtime').innerText = response.data.mtime;
+        let totalSize;
+        if(response.data.size < 1000) totalSize = response.data.size + ' bytes';
+        if(response.data.size > 1000 && response.data.size < 100000) totalSize = (Math.round(response.data.size/1000*10)/10) + 'KB';
+        if(response.data.size > 100000 && response.data.size < 100000000) totalSize = (Math.round(response.data.size/1000000*10)/10) + 'MB';
+        document.querySelector('#infoBody-size').innerText = totalSize;
     });
 }
 
@@ -90,17 +118,79 @@ function printContent(folder){
 function printFolder(folder){
     let key = Object.keys(folder);
     key.forEach(e => {
-        console.log(e)
-        let div = document.createElement('div');
-        div.className = 'card m-2'
+        // console.log(e)
+        // console.log(folder[e].type);
+        const div = document.createElement('div');
+        div.className = 'card m-2 d-flex justify-content-center';
+        div.dataset.path = folder[e].path;
 
         div.innerHTML = `
-            <img class="card-img-top" src="" alt="Card image cap">
-            <div class="card-body">
+            <img class="mx-auto mt-2" src="src/img/icons/${checkImgSrc(folder[e].type)}" height="65px" alt="Card image cap">
+            <div class="card-body mx-auto mt-2">
                 <h5 class="card-title">${folder[e].name}</h5>
             </div>
-        `
+        `;
 
-        document.querySelector('#contentWindow').append(div);
+        (folder[e].type === 'directory') ? document.querySelector('#folderDisplay').append(div) : document.querySelector('#archiveDisplay').append(div);
     });
+
+    const files = document.querySelectorAll('#fileDisplay .card');
+    files.forEach( e=>{
+        e.addEventListener('dblclick', (e)=>{
+            const file = e.currentTarget.querySelector('img');
+            if(file.src.includes('src/img/icons/folder.png')){
+                requestContent(e.currentTarget.dataset.path)
+            }else{
+                console.log("it's a file!")
+            }
+        });
+        e.addEventListener('click', (e)=>requestFileInfo(e.currentTarget.dataset.path));
+    });
+}
+
+function printBreadcrumb(path){
+    const elements = path.replace('/', '').replace(/\./g, '').replace('/', '').split('/');
+    const breadcrumb = document.querySelector('#breadcrumb-ol');
+    let relativePath = '../..'
+    breadcrumb.innerHTML = '';
+
+    elements.forEach((e, i)=>{
+        const li = document.createElement('li');
+        relativePath += ('/' + e);
+        li.className = 'breadcrumb-item';
+        if(i+1 != elements.length) li.classList.add('breadcrumb__link');
+        li.dataset.path =relativePath;
+        li.textContent = e;
+
+        breadcrumb.append(li);
+    })
+
+    const liElements = document.querySelectorAll('#breadcrumb-ol li');
+    liElements.forEach((e, i)=>{
+        if(i+1 < liElements.length){
+            e.addEventListener('click', e=>{
+                requestContent(e.target, false)
+            })
+        }
+    });
+}
+
+function checkImgSrc(type){
+    let finalPath = '';
+
+    switch (type) {
+        case 'directory': finalPath = 'folder.png'; break;
+        case 'image/png': finalPath = 'png.png'; break;
+        case 'image/jpg':
+        case 'image/jpeg': finalPath = 'jpg.png'; break;
+        case 'application/vnd.openxmlformats-officedocument.wordprocessingml.document': finalPath = 'doc.png'; break;
+        case 'application/zip': finalPath = 'zip.png'; break;
+        case 'audio/mp3':
+        case 'audio/mpeg': finalPath = 'mp3.png'; break;
+        case 'video/mp4': finalPath = 'mp4.png'; break;
+
+        default: finalPath = 'unknown.png'; break;
+    }
+
+    return finalPath;
 }
