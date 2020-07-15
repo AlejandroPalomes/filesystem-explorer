@@ -1,19 +1,18 @@
-
 axios({
     method: 'get',
     url: 'src/php/searchdir.php',
-}).then((response)=>{
+}).then((response) => {
     document.querySelector('#sideMenu').innerHTML = '';
     iterateFolders(response.data);
-    document.querySelectorAll('[data-path]').forEach(e=>{
-        e.addEventListener('click', link=> requestContent(link.target));
+    document.querySelectorAll('[data-path]').forEach(e => {
+        e.addEventListener('click', link => requestContent(link.target));
     });
 });
 
-function iterateFolders(folder, parent){
+function iterateFolders(folder, parent) {
     let key = Object.keys(folder);
     key.forEach(e => {
-        if(folder[e].type === 'directory'){
+        if (folder[e].type === 'directory') {
             let newId = folder[e].path.replace(/\//g, '_').replace(/\./g, '');
             let contents;
             hasContent = false;
@@ -26,7 +25,7 @@ function iterateFolders(folder, parent){
             li.dataset['test'] = newId;
             li2.className = 'nav-item';
 
-            if(!parent){
+            if (!parent) {
                 li.className = `nav-item ${(hasContent) ? 'dropdwon' : ''}`;
                 li.innerHTML = `
                     <a class="nav-link" data-path="${folder[e].path}" ${(hasContent) ? ' data-toggle="collapse" href="#'+ newId +'" role="button" aria-expanded="false" aria-controls="'+ newId +'"' : 'href="#"'}>${folder[e].name}</a>
@@ -38,12 +37,12 @@ function iterateFolders(folder, parent){
                 <ul class="ml-4" data-father="${folder[e].path}"></ul>
                 `
                 document.querySelector('#sideMenu').append(li);
-                if(hasContent) document.querySelector('#sideMenu').append(li2);
-            }else{
+                if (hasContent) document.querySelector('#sideMenu').append(li2);
+            } else {
                 let li3 = document.createElement('li');
                 li3.dataset['test'] = newId;
 
-                if(hasContent){
+                if (hasContent) {
                     li.className = `nav-item dropdwon`;
                     li.innerHTML = `
                         <a class="nav-link" data-path="${folder[e].path}" ${(hasContent) ? ' data-toggle="collapse" href="#' + newId + '" role="button" aria-expanded="false" aria-controls="'+ newId +'"' : 'href="#"'}>${folder[e].name}</a>
@@ -54,19 +53,19 @@ function iterateFolders(folder, parent){
                     li3.innerHTML = `<ul class="ml-4" data-father="${folder[e].path}"></ul>`
                     document.querySelector(`[data-father="${parent}"]`).append(li);
                     document.querySelector(`[data-father="${parent}"]`).append(li3);
-                }else{
+                } else {
                     li3.innerHTML = `<a class="nav-link" data-path="${folder[e].path}" href="#">${folder[e].name}</a>`;
                     document.querySelector(`[data-father="${parent}"]`).append(li3);
                 }
             }
             iterateFolders(folder[e].content, folder[e].path);
-        }else{
+        } else {
             //console.log(folder[e].name);
         }
     });
 }
 
-function requestContent(folder){
+function requestContent(folder) {
     const finalPath = folder.dataset.path.replace('/', '').replace(/\./g, '').replace('/', '');
     const form = new FormData();
 
@@ -75,17 +74,17 @@ function requestContent(folder){
     axios({
         method: 'POST',
         url: 'src/php/printFolder.php',
-        data:{
+        data: {
             form
         }
-    }).then((response)=>{
+    }).then((response) => {
         document.querySelector('#contentWindow').innerHTML = '';
         printFolder(response.data);
     });
 }
 
 
-function printFolder(folder){
+function printFolder(folder) {
     let key = Object.keys(folder);
     key.forEach(e => {
         console.log(e)
@@ -96,12 +95,20 @@ function printFolder(folder){
         console.log(folder[e].type);
 
         switch (folder[e].type) {
-            case 'image/png': imgPath = 'png.png'; break;
+            case 'image/png':
+                imgPath = 'png.png';
+                break;
             case 'image/jpg':
-            case 'image/jpeg': imgPath = 'jpg.png'; break;
-            case 'application/vnd.openxmlformats-officedocument.wordprocessingml.document': imgPath = 'doc.png'; break;
-            case 'directory': imgPath = 'folder.png'; break;
-        
+            case 'image/jpeg':
+                imgPath = 'jpg.png';
+                break;
+            case 'application/vnd.openxmlformats-officedocument.wordprocessingml.document':
+                imgPath = 'doc.png';
+                break;
+            case 'directory':
+                imgPath = 'folder.png';
+                break;
+
             default:
                 break;
         }
@@ -116,3 +123,25 @@ function printFolder(folder){
         document.querySelector('#contentWindow').append(div);
     });
 }
+
+
+function createFolder() {
+    let dirdata = new FormData();
+    dirdata.set('dir_name', 'test1' );
+
+
+    axios({
+        method: 'POST',
+        url: 'src/php/createFolder.php',
+        data: {
+            dirdata
+        }
+    }).then((response) => {
+        document.querySelector('#contentWindow').innerHTML = '';
+        printFolder(response.data);
+    });
+
+
+}
+
+document.querySelector('.prueba1').addEventListener('click',createFolder);
