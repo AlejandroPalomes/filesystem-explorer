@@ -79,7 +79,7 @@ function requestContent(folder) {
     }).then((response) => {
         document.querySelector('#folderDisplay').innerHTML = '';
         document.querySelector('#archiveDisplay').innerHTML = '';
-        document.querySelector('#breadcrumb').dataset.fullPath = folder.dataset.path;
+        document.querySelector('#breadcrumb').dataset.path = folder.dataset.path;
         printBreadcrumb(folder.dataset.path);
         printFolder(response.data);
     });
@@ -100,6 +100,7 @@ function requestFileInfo(path) {
         // document.querySelector('#folderDisplay').innerHTML = '';
         // document.querySelector('#archiveDisplay').innerHTML = '';
         // document.querySelector('#breadcrumb').dataset.fullPath = folder.dataset.path;
+        console.log(document.querySelector('#breadcrumb').dataset.path)
         console.log(response.data)
 
     });

@@ -127,6 +127,19 @@ h5.card-title{
     width: 150px;
 }
 
+.infoWindow{
+    width: 30%;
+    border: 1px solid red;
+}
+
+.infoPreview{
+    height: 40%;
+    border: 1px solid greenyellow;
+}
+.infoBody{
+    height: 60%;
+    border: 1px solid greenyellow;
+}
 
 /*____ Footer___*/
 footer {
