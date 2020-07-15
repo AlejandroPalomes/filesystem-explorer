@@ -47,6 +47,14 @@ li {
     background: none;
 }
 
+.breadcrumb__link{
+    color: blue;
+}
+
+.breadcrumb__link:hover{
+    cursor: pointer;
+}
+
 .button_principal{
     background-color: #0455BF !important;
     height: 35px;
