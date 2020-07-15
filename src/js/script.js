@@ -67,19 +67,40 @@ function iterateFolders(folder, parent){
 }
 
 function printContent(folder){
-    const finalPath = folder.dataset.path.replace('/', '').replace(/\./g, '');
-    console.log(finalPath);
+    const finalPath = folder.dataset.path.replace('/', '').replace(/\./g, '').replace('/', '');
+    //console.log(finalPath);
+    const form = new FormData();
+
+    // form.path = finalPath;
+    form.path = folder.dataset.path;
 
     axios({
         method: 'POST',
         url: 'src/php/printFolder.php',
+        data:{
+            form
+        }
     }).then((response)=>{
-        document.querySelector('#sideMenu').innerHTML = '';
-        iterateFolders(response.data);
-        document.querySelectorAll('[data-path]').forEach(e=>{
-            e.addEventListener('click', link=> printContent(link.target));
-        });
+        document.querySelector('#contentWindow').innerHTML = '';
+        printFolder(response.data);
     });
 }
 
 
+function printFolder(folder){
+    let key = Object.keys(folder);
+    key.forEach(e => {
+        console.log(e)
+        let div = document.createElement('div');
+        div.className = 'card m-2'
+
+        div.innerHTML = `
+            <img class="card-img-top" src="" alt="Card image cap">
+            <div class="card-body">
+                <h5 class="card-title">${folder[e].name}</h5>
+            </div>
+        `
+
+        document.querySelector('#contentWindow').append(div);
+    });
+}
