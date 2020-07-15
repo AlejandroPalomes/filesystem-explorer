@@ -1,3 +1,4 @@
+requestContent('../../root');
 
 axios({
     method: 'get',
@@ -6,7 +7,7 @@ axios({
     document.querySelector('#sideMenu').innerHTML = '';
     iterateFolders(response.data);
     document.querySelectorAll('[data-path]').forEach(e=>{
-        e.addEventListener('click', link=> requestContent(link.target));
+        e.addEventListener('click', link=> requestContent(link.target, false));
     });
 });
 
@@ -66,10 +67,10 @@ function iterateFolders(folder, parent){
     });
 }
 
-function requestContent(folder){
+function requestContent(folder, init = true){
     const form = new FormData();
 
-    form.path = folder.dataset.path;
+    init ? form.path = folder : form.path = folder.dataset.path;
 
     axios({
         method: 'POST',
@@ -80,8 +81,9 @@ function requestContent(folder){
     }).then((response)=>{
         document.querySelector('#folderDisplay').innerHTML = '';
         document.querySelector('#archiveDisplay').innerHTML = '';
-        document.querySelector('#breadcrumb').dataset.path = folder.dataset.path;
-        printBreadcrumb(folder.dataset.path);
+        document.querySelector('#breadcrumb').dataset.path = form.path;
+        // printBreadcrumb(folder.dataset.path);
+        printBreadcrumb(form.path);
         printFolder(response.data);
     });
 }
@@ -171,7 +173,7 @@ function printBreadcrumb(path){
     liElements.forEach((e, i)=>{
         if(i+1 < liElements.length){
             e.addEventListener('click', e=>{
-                requestContent(e.target)
+                requestContent(e.target, false)
             })
         }
     });

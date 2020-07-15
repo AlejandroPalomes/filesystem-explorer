@@ -36,39 +36,14 @@
             <div class="contentWindow__navbar d-flex justify-content-between align-items-center">
                 <nav id="breadcrumb" class="contentWindow__breadcrumb" aria-label="breadcrumb">
                     <ol id="breadcrumb-ol" class="breadcrumb">
-                        <li class="breadcrumb-item"><a >root</a></li>
-                        <li class="breadcrumb-item"><a >Library</a></li>
-                        <li class="breadcrumb-item active" aria-current="page">Data</li>
                     </ol>
                 </nav>
                 <!-- Button trigger modal -->
                 <button type="button" class="button_principal mr-3" data-toggle="modal" data-target="#staticBackdrop">+</button>
             </div>
             <div id="fileDisplay">
-                <div id="folderDisplay" class="d-flex flex-wrap">
-
-                </div>
-                <div id="archiveDisplay" class="d-flex flex-wrap">
-
-                </div>
-                <!-- <div class="card m-2">
-                    <img class="card-img-top" src="" alt="Card image cap">
-                    <div class="card-body">
-                        <h5 class="card-title">Card title</h5>
-                    </div>
-                </div>
-                <div class="card m-2">
-                    <img class="card-img-top" src="" alt="Card image cap">
-                    <div class="card-body">
-                        <h5 class="card-title">Card title</h5>
-                    </div>
-                </div>
-                <div class="card m-2">
-                    <img class="card-img-top" src="" alt="Card image cap">
-                    <div class="card-body">
-                        <h5 class="card-title">Card title</h5>
-                    </div>
-                </div> -->
+                <div id="folderDisplay" class="d-flex flex-wrap"></div>
+                <div id="archiveDisplay" class="d-flex flex-wrap"></div>
             </div>
 
             <!-- Modal -->
@@ -94,11 +69,28 @@
             </div>
         </div>
         <div class="infoWindow">
-            <div class="infoPreview">
-                <img src="src/img/icons/unknown.png" height="" alt="">
+            <div class="infoPreview d-flex align-items-center justify-content-center">
+                <img src="src/img/icons/unknown.png" height="50%" alt="">
             </div>
-            <div class="infoBody">
-
+            <div class="infoBody  d-flex align-items-center justify-content-center">
+                <div class="infoBody__contaienr">
+                    <div>
+                        <span>Name</span>
+                        <span id="infoBody-name">Undefined</span>
+                    </div>
+                    <div>
+                        <span>Type</span>
+                        <span id="infoBody-type">Unknown</span>
+                    </div>
+                    <div>
+                        <span>Size</span>
+                        <span id="infoBody-size">0kb</span>
+                    </div>
+                    <div>
+                        <span>Las modification</span>
+                        <span id="infoBody-mtime">Unknown</span>
+                    </div>
+                </div>
             </div>
         </div>
     </div>

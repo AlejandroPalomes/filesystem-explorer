@@ -140,6 +140,12 @@ h5.card-title{
     border: 1px solid greenyellow;
 }
 
+.infoBody__contaienr{
+    border: 1px solid blueviolet;
+    width: 75%;
+    height: 75%;
+}
+
 /*____ Footer___*/
 footer {
     position: absolute;
