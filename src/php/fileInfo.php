@@ -9,7 +9,8 @@
         $result->path = $route;
         $result->type = mime_content_type($route);
         $result->size = filesize($route);
-        $result->mtime = filemtime($route);
+        // $date = new dateTime(filemtime($route));
+        $result->mtime = date ("F d Y, H:i", filemtime($route));
         // $file->content = dirToArray($newDir);
 
         return $result;

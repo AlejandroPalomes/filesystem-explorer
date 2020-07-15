@@ -1,16 +1,18 @@
+loadSideMenu();
 requestContent('../../root');
 
-axios({
+function loadSideMenu(){
+    axios({
     method: 'get',
     url: 'src/php/searchdir.php',
-}).then((response)=>{
-    document.querySelector('#sideMenu').innerHTML = '';
-    iterateFolders(response.data);
-    document.querySelectorAll('[data-path]').forEach(e=>{
-        e.addEventListener('click', link=> requestContent(link.target, false));
+    }).then((response)=>{
+        document.querySelector('#sideMenu').innerHTML = '';
+        iterateFolders(response.data);
+        document.querySelectorAll('#sideMenu [data-path]').forEach(e=>{
+            e.addEventListener('click', link=> requestContent(link.target, false));
+        });
     });
-});
-
+}
 function iterateFolders(folder, parent){
     let key = Object.keys(folder);
     key.forEach(e => {
@@ -100,12 +102,15 @@ function requestFileInfo(path){
             form
         }
     }).then((response)=>{
-        // document.querySelector('#folderDisplay').innerHTML = '';
-        // document.querySelector('#archiveDisplay').innerHTML = '';
-        // document.querySelector('#breadcrumb').dataset.fullPath = folder.dataset.path;
-        console.log(document.querySelector('#breadcrumb').dataset.path)
-        console.log(response.data)
-        
+        document.querySelector('#infoPreview-img').src = 'src/img/icons/' + checkImgSrc(response.data.type);
+        document.querySelector('#infoBody-name').innerText = response.data.name;
+        document.querySelector('#infoBody-type').innerText = response.data.type;
+        document.querySelector('#infoBody-mtime').innerText = response.data.mtime;
+        let totalSize;
+        if(response.data.size < 1000) totalSize = response.data.size + ' bytes';
+        if(response.data.size > 1000 && response.data.size < 100000) totalSize = (Math.round(response.data.size/1000*10)/10) + 'KB';
+        if(response.data.size > 100000 && response.data.size < 100000000) totalSize = (Math.round(response.data.size/1000000*10)/10) + 'MB';
+        document.querySelector('#infoBody-size').innerText = totalSize;
     });
 }
 
@@ -121,33 +126,27 @@ function printFolder(folder){
         let imgPath = '';
         let imgSize = '';
 
-        switch (folder[e].type) {
-            case 'directory': imgPath = 'folder.png'; break;
-            case 'image/png': imgPath = 'png.png'; break;
-            case 'image/jpg':
-            case 'image/jpeg': imgPath = 'jpg.png'; break;
-            case 'application/vnd.openxmlformats-officedocument.wordprocessingml.document': imgPath = 'doc.png'; break;
-            case 'application/zip': imgPath = 'zip.png'; break;
-            case 'audio/mp3':
-            case 'audio/mpeg': imgPath = 'mp3.png'; break;
-
-            default: imgPath = 'unknown.png'; break;
-        }
 
         div.innerHTML = `
-            <img class="mx-auto mt-2" src="src/img/icons/${imgPath}" height="65px" alt="Card image cap">
+            <img class="mx-auto mt-2" src="src/img/icons/${checkImgSrc(folder[e].type)}" height="65px" alt="Card image cap">
             <div class="card-body mx-auto mt-2">
                 <h5 class="card-title">${folder[e].name}</h5>
             </div>
         `;
 
-        // document.querySelector('#folderDisplay').append(div);
         (folder[e].type === 'directory') ? document.querySelector('#folderDisplay').append(div) : document.querySelector('#archiveDisplay').append(div);
     });
 
     const files = document.querySelectorAll('#fileDisplay .card');
     files.forEach( e=>{
-        e.addEventListener('dblclick', ()=>console.log('ho'));
+        e.addEventListener('dblclick', (e)=>{
+            const file = e.currentTarget.querySelector('img');
+            if(file.src.includes('src/img/icons/folder.png')){
+                requestContent(e.currentTarget.dataset.path)
+            }else{
+                console.log("it's a file!")
+            }
+        });
         e.addEventListener('click', (e)=>requestFileInfo(e.currentTarget.dataset.path));
     });
 }
@@ -177,4 +176,24 @@ function printBreadcrumb(path){
             })
         }
     });
+}
+
+function checkImgSrc(type){
+    let finalPath = '';
+
+    switch (type) {
+        case 'directory': finalPath = 'folder.png'; break;
+        case 'image/png': finalPath = 'png.png'; break;
+        case 'image/jpg':
+        case 'image/jpeg': finalPath = 'jpg.png'; break;
+        case 'application/vnd.openxmlformats-officedocument.wordprocessingml.document': finalPath = 'doc.png'; break;
+        case 'application/zip': finalPath = 'zip.png'; break;
+        case 'audio/mp3':
+        case 'audio/mpeg': finalPath = 'mp3.png'; break;
+        case 'video/mp4': finalPath = 'mp4.png'; break;
+
+        default: finalPath = 'unknown.png'; break;
+    }
+
+    return finalPath;
 }
