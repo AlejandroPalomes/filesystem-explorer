@@ -77,8 +77,9 @@ function requestContent(folder) {
         data: {
             form
         }
-    }).then((response) => {
-        document.querySelector('#contentWindow').innerHTML = '';
+    }).then((response)=>{
+        document.querySelector('#folderDisplay').innerHTML = '';
+        document.querySelector('#archiveDisplay').innerHTML = '';
         printFolder(response.data);
     });
 }
@@ -88,26 +89,21 @@ function printFolder(folder) {
     let key = Object.keys(folder);
     key.forEach(e => {
         console.log(e)
+        console.log(folder[e].type);
         const div = document.createElement('div');
         div.className = 'card m-2 d-flex justify-content-center';
         let imgPath = '';
         let imgSize = '';
-        console.log(folder[e].type);
 
         switch (folder[e].type) {
-            case 'image/png':
-                imgPath = 'png.png';
-                break;
+            case 'directory': imgPath = 'folder.png'; break;
+            case 'image/png': imgPath = 'png.png'; break;
             case 'image/jpg':
-            case 'image/jpeg':
-                imgPath = 'jpg.png';
-                break;
-            case 'application/vnd.openxmlformats-officedocument.wordprocessingml.document':
-                imgPath = 'doc.png';
-                break;
-            case 'directory':
-                imgPath = 'folder.png';
-                break;
+            case 'image/jpeg': imgPath = 'jpg.png'; break;
+            case 'application/vnd.openxmlformats-officedocument.wordprocessingml.document': imgPath = 'doc.png'; break;
+            case 'application/zip': imgPath = 'zip.png'; break;
+            case 'audio/mp3':
+            case 'audio/mpeg': imgPath = 'mp3.png'; break;
 
             default:
                 break;
@@ -118,9 +114,10 @@ function printFolder(folder) {
             <div class="card-body mx-auto mt-2">
                 <h5 class="card-title">${folder[e].name}</h5>
             </div>
-        `
+        `;
 
-        document.querySelector('#contentWindow').append(div);
+        // document.querySelector('#folderDisplay').append(div);
+        (folder[e].type === 'directory') ? document.querySelector('#folderDisplay').append(div) : document.querySelector('#archiveDisplay').append(div);
     });
 }
 
@@ -144,4 +141,4 @@ function createFolder() {
 
 }
 
-document.querySelector('.prueba1').addEventListener('click',createFolder);
+//document.querySelector('.prueba1').addEventListener('click',createFolder);
