@@ -195,8 +195,10 @@ function printBreadcrumb(path) {
 // Create Folder
 function createFolder() {
     let dirdata = new FormData();
-    dirdata.set('dir_name', 'test1');
-
+    let folderName = document.getElementById('folderName').value;
+    let folderPath = document.querySelector('#breadcrumb').dataset.path;
+    dirdata.folderName = folderName;
+    dirdata.folderPath = folderPath;
 
     axios({
         method: 'POST',
@@ -205,23 +207,23 @@ function createFolder() {
             dirdata
         }
     }).then((response) => {
-        document.querySelector('#contentWindow').innerHTML = '';
-        printFolder(response.data);
+        console.log(response.data);
+        console.log(folderPath + '/' + folderName);
+        if(response.data == folderPath + '/' + folderName){
+            requestContent(document.querySelector('#breadcrumb'));
+            //amagar el modal
+        }else{
+            //posar missatge al modal de error
+            alert('Failed to create');
+        }
     });
 }
 
 
 //Submit Form
 function submitFolder() {
-    const breadcrumb = document.querySelector('#breadcrumb');
-    console.log(document.querySelector('#breadcrumb').dataset.path);
-    return;
-
-
-    console.log(document.getElementsByClassName('breadcrumb-item active').getAttribute('data-path'));
-    return;
-    document.getElementById('folderPath').value = document.getElementById('breadcrumb').value;
+    document.getElementById('folderPath').value = document.querySelector('#breadcrumb').dataset.path;
     document.querySelector('#createFolderForm').submit();
 }
 
-document.querySelector('.createFolderButton').addEventListener('click', submitFolder);
+document.querySelector('.createFolderButton').addEventListener('click', createFolder);

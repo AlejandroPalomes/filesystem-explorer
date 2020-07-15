@@ -1,12 +1,11 @@
 <?php
 
-$path = $_POST['folderPath'] . $_POST['dir_name'];
+$tmp = json_decode(file_get_contents("php://input"), true);
+$path = $tmp['dirdata']['folderPath'] . '/' . $tmp['dirdata']['folderName'];
 
 
-if(!mkdir($path, 0777, false)) {
-    die('Fallo al crear las carpetas...');
+if(mkdir($path, 0777, false)) {
+    echo $path;
+}else{
+    echo 'Error';
 }
-
-
-
-?>
