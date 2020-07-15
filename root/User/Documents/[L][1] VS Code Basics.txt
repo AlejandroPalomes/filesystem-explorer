@@ -1,0 +1,59 @@
+﻿Introduction
+Visual Studio Code is a cross-platform source code editor developed by Microsoft that incorporates support for debugging, integrated Git control, syntax highlighting, intelligent code completion, snippets and code refactoring. One of its strengths is that it is free and open source. It is developed in Electron, a framework that is used to implement Node.js desktop applications.
+  
+
+What are the main objectives in this project?
+* Know Visual Studio Code and its potential
+1. General analysis
+1.1. Download and install Visual Studio Code
+How could it be otherwise, the first step is to download and install Visual Studio Code from its official website https://code.visualstudio.com/
+1.2. Analyze the interface
+Next, review the menus provided by the interface and make a small document that explains how it works and how each of the following elements is used:
+* Left side menu
+   * File Explorer
+   * Search
+   * Source Code Control
+   * Debug
+   * Extensions
+* Command palette
+* Go to file palette
+* Integrated terminal
+* Integration with GIT
+1.3. Analyze some functionalities
+* How to make use of Multiple Cursors
+* How to make adjustments in the editor and change configuration parameters
+* How to change the theme
+* How to install extensions and themes
+1.4. Test yourself
+* Create a directory
+* Create a file
+* Delete a file
+* Delete a directory
+* Install and uninstall two extensions
+* Install two themes and change the theme that comes by default
+* Search for a file by name using the palette
+* Execute the command “Format the document”
+We recommend the Debugger for Chrome extension so you can test your code: https://marketplace.visualstudio.com/items?itemName=msjsdiag.debugger-for-chrome
+
+
+1.5. Install “Live Share” Plugin
+1. Install this extension pack and reload VS Code
+  
+
+2. Open your project, then click the Live Share button in your status bar to start a new collaboration session. You'll be asked to login with your GitHub or Microsoft account the first time, which simply allows other developers to identify you.
+  
+
+3. Open the Live Share Sessions Details view and here you will be able to see all the available options of the plugin.
+  
+
+4. A new document window, titled Live Share Chat, will automatically open to the side. This window provides you with an integrated chat channel that is scoped to the guests in your collaboration session. If you close the window, you can always re-open it by clicking the Chat Channel node in the Live Share Session Details view (as displayed below).
+  
+
+2. Resources
+* Visual Studio Code [Official]: https://code.visualstudio.com/
+* Live Share: https://marketplace.visualstudio.com/items?itemName=MS-vsliveshare.vsliveshare
+* Beautify: https://marketplace.visualstudio.com/items?itemName=HookyQR.beautify
+* Better Comments: https://marketplace.visualstudio.com/items?itemName=aaron-bond.better-comments
+* Trailing Spaces: https://marketplace.visualstudio.com/items?itemName=shardulm94.trailing-spaces
+* TODO Highlight: https://marketplace.visualstudio.com/items?itemName=wayou.vscode-todo-highlight
+* indent-rainbow: https://marketplace.visualstudio.com/items?itemName=oderwat.indent-rainbow
