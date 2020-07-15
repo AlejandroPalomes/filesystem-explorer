@@ -123,9 +123,6 @@ function printFolder(folder){
         const div = document.createElement('div');
         div.className = 'card m-2 d-flex justify-content-center';
         div.dataset.path = folder[e].path;
-        let imgPath = '';
-        let imgSize = '';
-
 
         div.innerHTML = `
             <img class="mx-auto mt-2" src="src/img/icons/${checkImgSrc(folder[e].type)}" height="65px" alt="Card image cap">
