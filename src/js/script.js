@@ -9,6 +9,7 @@ const renameBtn = document.querySelector('#renameConfirmBtn');
 const renameInp = document.querySelector('#renameInput');
 const optionsBtn = document.querySelector('#optionsButton');
 const createFolderBtn = document.querySelector('#createFolderBtn');
+const uploadFileBtn = document.querySelector('#uploadFileConfirmBtn');
 
 document.querySelector('body').addEventListener('click', e=>{
     if(!e.target.classList.contains('rClickOption')) contextMenu.classList.add('d-none');
@@ -27,6 +28,10 @@ renameBtn.addEventListener('click', e=>{
 })
 
 createFolderBtn.addEventListener('click', createFolder);
+uploadFileConfirmBtn.addEventListener('click', (e)=> {
+    $('#uploadFile').modal('hide');
+    uploadFile(document.querySelector('#fileToUpload').files[0].name);
+});
 
 options.forEach(option=>{
     option.addEventListener('click', e=>{
@@ -42,7 +47,7 @@ createOptions.forEach(option=>{
     option.addEventListener('click', e=>{
         switch (e.target.innerText) {
             case 'Folder': $('#staticBackdrop').modal('show'); contextMenu.classList.add('d-none'); break;
-            case 'Upload File': console.log('Ready to upload file'); contextMenu.classList.add('d-none'); break;
+            case 'Upload File': $('#uploadFile').modal('show'); contextMenu.classList.add('d-none'); break;
             case 'Upload Folder': console.log('Ready to upload folder'); contextMenu.classList.add('d-none'); break;
             default: contextMenu.classList.add('d-none'); break;
         }
@@ -384,6 +389,43 @@ function renameFile(path, name){
         }
     }).then((response)=>{
         if(response.data) requestContent(document.querySelector('#breadcrumb').dataset.path);
+    });
+}
+
+function uploadFile(file){
+    const form = new FormData();
+    const targetPath = document.querySelector('#breadcrumb').dataset.path;
+    form.fileToUpload = file;
+    form.target = targetPath;
+    
+    /*
+    axios({
+        method: 'POST',
+        url: 'src/php/uploadFile.php',
+        data: {
+            form
+        },
+        headers: {
+            'Content-Type': false,
+            'Process-data': false
+        }
+
+    }).then((response)=>{
+        // document.querySelector('#folderDisplay').innerHTML = '';
+        // document.querySelector('#archiveDisplay').innerHTML = '';
+        console.log(response.data);
+        // printBreadcrumb(targetPath);
+        // requestContent(targetPath);
+    });
+    */
+
+    $.ajax({
+        url: 'src/php/uploadFile.php',
+        type: 'POST',
+        processData: false, // important
+        contentType: false, // important
+        dataType : 'json',
+        data: form
     });
 }
 
