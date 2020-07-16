@@ -126,6 +126,14 @@ h5.card-title{
     transition: border-color .15s ease-in-out, box-shadow .15s ease-in-out;
 }
 
+.navbar-dark .navbar-toggler {
+    border: 0 !important;
+    -webkit-box-shadow: none;
+    box-shadow: none !important;
+}
+
+
+
 .bg-navbar {
     background-color: #0455BF !important;
 }
@@ -147,9 +155,6 @@ h5.card-title{
     height: 40vh;
     overflow: hidden;
 }
-/* .infoBody{
-    height: 60vh;
-} */
 
 .infoBody__contaienr{
     width: 75%;
@@ -248,4 +253,42 @@ img.icon-xxss {
 .createOptions li:hover{
     cursor: pointer;
     background-color: rgb(240, 240, 240);
+}
+
+.modal-content {
+    border: 0 !important;
+    border-radius: .6rem !important;
+}
+
+.btn-primary {
+    color: #fff;
+    background-color: #0455BF !important;
+    border:hidden !important;
+}
+
+.btn-primary:hover {
+    color: #fff;
+    background-color: #67a2f0 !important;
+    border: hidden !important;
+}
+
+.btn-secondary {
+    color: #fff;
+    background-color: #acacac;
+    border: hidden !important;
+}
+
+#folderName{
+    border:hidden !important;
+    border-radius: 5px;
+    background-color: #eaf2ff;
+    padding: 8px;
+    font-size: 14px;
+    font-weight: 500;
+    width: 300px;
+}
+
+.modal-header{
+    border: hidden !important;
+    margin-bottom: -10px !important;
 }
