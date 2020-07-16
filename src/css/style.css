@@ -255,6 +255,11 @@ img.icon-xxss {
     background-color: rgb(240, 240, 240);
 }
 
+.rightClick li a{
+    color: rgb(47, 47, 47);
+    text-decoration: none;
+}
+
 .highlight{
     border: 1px solid rgba(15, 88, 188, 0.5);
     border-radius: 10px;
@@ -297,4 +302,10 @@ img.icon-xxss {
 .modal-header{
     border: hidden !important;
     margin-bottom: -10px !important;
+}
+
+#iframepdf{
+    height: 720px;
+    width: 1280px;
+    background-color: white;
 }

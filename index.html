@@ -115,7 +115,7 @@
                 <li class="pt-2 pb-2 pl-4 rClickOption">Preview</li>
                 <li class="pt-2 pb-2 pl-4 rClickOption">Rename</li>
                 <li class="pt-2 pb-2 pl-4 rClickOption">Move to</li>
-                <li class="pt-2 pb-2 pl-4 rClickOption">Download</li>
+                <li class="pt-2 pb-2 pl-4 rClickOption"><a href="#" id='downloadFile' download>Download</a></li>
                 <li class="pt-2 pb-2 pl-4 rClickOption">Remove</li>
             </ul>
         </div>
@@ -140,6 +140,7 @@
                     <source src="" type="video/mp4">
                 </video>
                 <img id="imgTag" class="d-none imgPreview pointer-events" src="" alt="">
+                <iframe id="iframepdf" src="" class="d-none pointer-events"></iframe>
             </div>
         </div>
     </div>
@@ -185,7 +186,6 @@
             </div>
         </div>
     </div>
-    
     <script
   src="https://code.jquery.com/jquery-3.5.1.js"
   integrity="sha256-QWo7LDvxbWT2tbbQ97B53yJnYU3WhH/C8ycbRAkjPDc="

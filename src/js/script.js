@@ -89,6 +89,14 @@ options.forEach(option => {
                 renameBtn.dataset.path = e.currentTarget.dataset.path;
                 contextMenu.classList.add('d-none');
                 break;
+            case 'Download':
+                document.querySelector('#downloadFile').href = removeAllButLast(e.currentTarget.dataset.path, '.').replace('/', '').replace('/', '');
+                contextMenu.classList.add('d-none');
+                break;
+            case 'Preview':
+                openPreview(e.currentTarget.dataset.path, true);
+                contextMenu.classList.add('d-none');
+                break;
             default:
                 contextMenu.classList.add('d-none');
                 break;
@@ -119,7 +127,6 @@ createOptions.forEach(option => {
         }
     })
 })
-
 
 function loadSideMenu() {
     axios({
@@ -263,30 +270,7 @@ function addListeners() {
             if (file.src.includes('src/img/icons/folder.png')) {
                 requestContent(e.currentTarget.dataset.path)
             } else {
-                $('#mediaPlayer').modal('show');
-                document.querySelector('#mediaPlayerTitle').innerText = e.currentTarget.querySelector('h5').innerText;
-                let playFile = null;
-                let fileType = e.currentTarget.dataset.type.toLowerCase();
-                if (fileType == 'mp3') playFile = document.querySelector('#audioTag');
-                if (fileType == 'mp4') playFile = document.querySelector('#videoTag');
-                if (fileType == 'pdf') showPreview(e.currentTarget.dataset.path);
-                if (fileType == 'jpg' || fileType == 'jpeg' ||
-                    fileType == 'svg' || fileType == 'png') {
-                    document.querySelector('#imgTag').src = e.currentTarget.dataset.path;
-                    document.querySelector('#imgTag').classList.remove('d-none');
-                } else {
-                    playFile.classList.remove('d-none')
-                    playFile.src = e.currentTarget.dataset.path;
-                    playFile.play();
-                }
-
-                $('#mediaPlayer').on('hidden.bs.modal', function (e) {
-                    document.querySelector('#imgTag').classList.add('d-none');
-                    if (playFile !== null) {
-                        playFile.classList.add('d-none')
-                        playFile.pause();
-                    }
-                })
+                openPreview(e);
             }
         });
         file.addEventListener('click', (e) => requestFileInfo(e.currentTarget.dataset.path));
@@ -303,6 +287,44 @@ function addListeners() {
 
         });
     });
+}
+
+function openPreview(e, isPath = false){
+    $('#mediaPlayer').modal('show');
+    let referenceFile = document.querySelector(`#archiveDisplay [data-path="${e}"]`);
+    document.querySelector('#mediaPlayerTitle').innerText = isPath ? referenceFile.querySelector('h5').innerText : e.currentTarget.querySelector('h5').innerText;
+    let playFile = null;
+    let fileType = isPath ? referenceFile.dataset.type.toLowerCase() : e.currentTarget.dataset.type.toLowerCase();
+
+    if (fileType == 'mp3') playFile = document.querySelector('#audioTag');
+    if (fileType == 'mp4') playFile = document.querySelector('#videoTag');
+    if (fileType == 'jpg' || fileType == 'jpeg' ||
+        fileType == 'svg' || fileType == 'png') {
+        document.querySelector('#imgTag').src = isPath ? e : e.currentTarget.dataset.path;
+        document.querySelector('#imgTag').classList.remove('d-none');
+    }
+    else if((fileType == 'mp3')||(fileType == 'mp4')){
+        playFile.classList.remove('d-none')
+        playFile.src = isPath ? e : e.currentTarget.dataset.path;
+        playFile.play();
+    }else{
+        document.querySelector('#iframepdf').src = removeAllButLast(isPath ? e : e.currentTarget.dataset.path, '.').replace('/', '').replace('/', '');
+        document.querySelector('#iframepdf').classList.remove('d-none');
+    }
+
+    $('#mediaPlayer').on('hidden.bs.modal', function (e) {
+        document.querySelector('#imgTag').classList.add('d-none');
+        document.querySelector('#iframepdf').classList.add('d-none');
+        if (playFile !== null) {
+            playFile.classList.add('d-none')
+            playFile.pause();
+        }
+    })
+}
+
+function removeAllButLast(string, token) {
+    var parts = string.split(token);
+    return parts.slice(0,-1).join('') + token + parts.slice(-1)
 }
 
 function printBreadcrumb(path) {
@@ -518,17 +540,19 @@ function uploadFile(file) {
 }
 
 function showPreview(path) {
-    const form = new FormData();
+    // const form = new FormData();
 
-    form.path = path;
+    // form.path = path;
 
-    axios({
-        method: 'POST',
-        url: 'src/php/showPreview.php',
-        data: {
-            form
-        }
-    }).then((response) => {
-        console.log(response.data)
-    });
+    // axios({
+    //     method: 'POST',
+    //     url: 'src/php/showPreview.php',
+    //     data: {
+    //         form
+    //     }
+    // }).then((response) => {
+    //     console.log(response.data)
+    // });
+    // console.log(path)
+    document.querySelector('#iframepdf').src = path;
 }
