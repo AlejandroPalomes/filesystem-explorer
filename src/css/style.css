@@ -249,3 +249,7 @@ img.icon-xxss {
     cursor: pointer;
     background-color: rgb(240, 240, 240);
 }
+
+.highlight{
+    border: 1px solid red;
+}
