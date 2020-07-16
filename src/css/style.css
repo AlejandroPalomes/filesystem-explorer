@@ -34,13 +34,11 @@ li {
 
 #contentWindow {
     flex-grow: 1;
-    /* width: 80%; */
 }
 
 .contentWindow__navbar{
     width: 100%;
     height: 50px;
-    /* border: 1px solid red; */
 }
 
 .contentWindow__breadcrumb{
@@ -133,14 +131,11 @@ h5.card-title{
 .infoWindow{
     width: 25vw;
     min-width: 300px;
-    border-right: 1px solid blue;
     border-left: 1px solid lightgrey;
 }
 
 .infoPreview{
-    border: 1px solid red;
     height: 40%;
-    /* width: 100%; */
     overflow: hidden;
 }
 .infoBody{
@@ -208,7 +203,6 @@ img.icon-xxss {
     justify-content: center;
     -ms-flex-direction: column;
     flex-direction: column;
-    /* pointer-events: auto; */
     background-clip: padding-box;
     flex-grow: 1;
 }
