@@ -10,6 +10,46 @@ const renameInp = document.querySelector('#renameInput');
 const optionsBtn = document.querySelector('#optionsButton');
 const createFolderBtn = document.querySelector('#createFolderBtn');
 const uploadFileBtn = document.querySelector('#uploadFileConfirmBtn');
+const dropArea = document.querySelector('#contentWindow');
+
+['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+    dropArea.addEventListener(eventName, preventDefaults, false)
+});
+
+function preventDefaults(e) {
+    e.preventDefault();
+    e.stopPropagation();
+};
+
+['dragenter', 'dragover'].forEach(eventName => {
+    dropArea.addEventListener(eventName, highlight, false)
+});
+
+
+['dragleave', 'drop'].forEach(eventName => {
+    dropArea.addEventListener(eventName, unhighlight, false)
+});
+
+function highlight(e) {
+    dropArea.classList.add('highlight')
+};
+
+function unhighlight(e) {
+    dropArea.classList.remove('highlight')
+};
+
+dropArea.addEventListener('drop', handleDrop, false)
+
+function handleDrop(e) {
+    let dt = e.dataTransfer
+    let files = dt.files
+
+    handleFiles(files)
+};
+
+function handleFiles(files) {
+    ([...files]).forEach(uploadFile)
+};
 
 document.querySelector('body').addEventListener('click', e => {
     if (!e.target.classList.contains('rClickOption')) contextMenu.classList.add('d-none');
@@ -451,41 +491,28 @@ function uploadFile(file) {
     const form = new FormData();
     const targetPath = document.querySelector('#breadcrumb').dataset.path;
     const newPath = targetPath.replace(/\//g, '~');
-    console.log(targetPath);
 
-    form.append("file", file, file.name,);
+    form.append("file", file, file.name, );
     form.append("path", file, newPath);
 
     axios({
-        method: 'post',
-        url: 'src/php/uploadFile.php',
-        data: form, targetPath,
-        headers: {'Content-Type': 'multipart/form-data' }
-    })
-    .then(function (response) {
-        //handle success
-        console.log(response.data);
-        if(response.data === 'sizeExceed') alert('File too big!')
-        requestContent(targetPath);
-    })
-    .catch(function (response) {
-        //handle error
-        console.log('response');
-    });
-
-
-    // $.ajax({
-    //     url: 'src/php/uploadFile.php',
-    //     type: 'POST',
-    //     processData: false, // important
-    //     contentType: false, // important
-    //     // dataType : 'json',
-    //     data: form,
-    //     success:function(data)
-    // {
-    //  console.log(data);
-    // }
-    // });
+            method: 'post',
+            url: 'src/php/uploadFile.php',
+            data: form,
+            targetPath,
+            headers: {
+                'Content-Type': 'multipart/form-data'
+            }
+        })
+        .then(function (response) {
+            //handle success
+            if (response.data === 'sizeExceed') alert('File too big!')
+            requestContent(targetPath);
+        })
+        .catch(function (response) {
+            //handle error
+            console.log('response');
+        });
 }
 
 function showPreview(path) {
