@@ -2,20 +2,47 @@ loadSideMenu();
 requestContent('../../root');
 
 const options = document.querySelectorAll('.rClickOption');
+const createOptions = document.querySelectorAll('.createOption');
 const contextMenu = document.querySelector('#rightClick');
+const createMenu = document.querySelector('#createOptions');
 const renameBtn = document.querySelector('#renameConfirmBtn');
 const renameInp = document.querySelector('#renameInput');
+const optionsBtn = document.querySelector('#optionsButton');
+const createFolderBtn = document.querySelector('#createFolderBtn');
 
-document.querySelector('body').addEventListener('click', e=>{if(!e.target.classList.contains('rClickOption')) contextMenu.classList.add('d-none')});
+document.querySelector('body').addEventListener('click', e=>{
+    if(!e.target.classList.contains('rClickOption')) contextMenu.classList.add('d-none');
+    if(!e.target.classList.contains('button_principal')) createMenu.classList.add('d-none');
+});
+
+optionsBtn.addEventListener('click', (e)=> {
+    console.log('hello')
+    createMenu.classList.remove('d-none');
+    createMenu.style.left = e.clientX-190 + 'px';
+    createMenu.style.top = e.clientY + 'px';
+});
+
 renameBtn.addEventListener('click', e=>{
     renameFile(e.target.dataset.path, renameInp.value);
     $('#renameFile').modal('hide');
 })
 
+createFolderBtn.addEventListener('click', createFolder);
+
 options.forEach(option=>{
     option.addEventListener('click', e=>{
         switch (e.target.innerText) {
             case 'Remove': removeFile(e.currentTarget.dataset.path); contextMenu.classList.add('d-none'); break;
+            case 'Rename': $('#renameFile').modal('show'); renameBtn.dataset.path = e.currentTarget.dataset.path; contextMenu.classList.add('d-none'); break;
+            default: contextMenu.classList.add('d-none'); break;
+        }
+    })
+})
+
+createOptions.forEach(option=>{
+    option.addEventListener('click', e=>{
+        switch (e.target.innerText) {
+            case 'Folder': $('#staticBackdrop').modal('show'); contextMenu.classList.add('d-none'); break;
             case 'Rename': $('#renameFile').modal('show'); renameBtn.dataset.path = e.currentTarget.dataset.path; contextMenu.classList.add('d-none'); break;
             default: contextMenu.classList.add('d-none'); break;
         }
@@ -35,6 +62,7 @@ function loadSideMenu(){
         });
     });
 }
+
 function iterateFolders(folder, parent){
     let key = Object.keys(folder);
     key.forEach(e => {
@@ -135,7 +163,6 @@ function requestFileInfo(path) {
         document.querySelector('#infoBody-size').innerText = totalSize;
     });
 }
-
 
 function printFolder(folder) {
     let key = Object.keys(folder);
@@ -300,9 +327,6 @@ function submitFolder() {
     document.getElementById('folderPath').value = document.querySelector('#breadcrumb').dataset.path;
     document.querySelector('#createFolderForm').submit();
 }
-
-const optionsBtn = document.querySelector('#optionsButton');
-optionsBtn.addEventListener('click', createFolder);
 
 const searchInput = document.querySelector('#searchFolder');
 searchInput.addEventListener('keyup', ()=>{
