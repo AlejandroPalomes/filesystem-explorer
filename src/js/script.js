@@ -118,8 +118,6 @@ function requestFileInfo(path) {
 function printFolder(folder) {
     let key = Object.keys(folder);
     key.forEach(e => {
-        console.log(e)
-        console.log(folder[e].type);
         const div = document.createElement('div');
         div.className = 'card m-2 d-flex justify-content-center';
         div.dataset.path = folder[e].path;
@@ -134,7 +132,10 @@ function printFolder(folder) {
 
         (folder[e].type === 'directory') ? document.querySelector('#folderDisplay').append(div) : document.querySelector('#archiveDisplay').append(div);
     });
+    addListeners();
+}
 
+function addListeners(){
     const files = document.querySelectorAll('#fileDisplay .card');
     files.forEach( e=>{
         e.addEventListener('dblclick', (e)=>{
@@ -171,14 +172,6 @@ function printFolder(folder) {
         e.addEventListener('click', (e)=>requestFileInfo(e.currentTarget.dataset.path));
     });
 }
-
-
-const files = document.querySelectorAll('#fileDisplay .card');
-files.forEach(e => {
-    e.addEventListener('dblclick', () => console.log('ho'));
-    e.addEventListener('click', (e) => requestFileInfo(e.currentTarget.dataset.path));
-});
-
 
 function printBreadcrumb(path) {
     const elements = path.replace('/', '').replace(/\./g, '').replace('/', '').split('/');
@@ -256,8 +249,8 @@ function createFolder() {
             dirdata
         }
     }).then((response) => {
-        console.log(response.data);
-        console.log(folderPath + '/' + folderName);
+        // console.log(response.data);
+        // console.log(folderPath + '/' + folderName);
         if(response.data == folderPath + '/' + folderName){
             requestContent(document.querySelector('#breadcrumb'));
             //amagar el modal
@@ -292,11 +285,9 @@ searchInput.addEventListener('keyup', ()=>{
                 form
             }
         }).then((response)=>{
-            console.log(response.data);
             document.querySelector('#folderDisplay').innerHTML = '';
             document.querySelector('#archiveDisplay').innerHTML = '';
-            // document.querySelector('#breadcrumb').dataset.path = '../../root';
-            // // printBreadcrumb(folder.dataset.path);
+
             printBreadcrumb('../../root');
             printFolder(response.data);
         });
