@@ -1,6 +1,20 @@
 loadSideMenu();
 requestContent('../../root');
 
+const options = document.querySelectorAll('.rClickOption');
+const contextMenu = document.querySelector('#rightClick');
+
+options.forEach(option=>{
+    option.addEventListener('click', e=>{
+        console.log('in clik first', e.target.innerText)
+        switch (e.target.innerText) {
+            case 'Remove': removeFile(e.currentTarget.dataset.path); contextMenu.classList.add('d-none'); break;
+            case 'Rename': renameFile(e.currentTarget.dataset.path); contextMenu.classList.add('d-none'); break;
+            default: contextMenu.classList.add('d-none'); break;
+        }
+    })
+})
+
 function loadSideMenu(){
     axios({
     method: 'get',
@@ -137,8 +151,8 @@ function printFolder(folder) {
 
 function addListeners(){
     const files = document.querySelectorAll('#fileDisplay .card');
-    files.forEach( e=>{
-        e.addEventListener('dblclick', (e)=>{
+    files.forEach( file=>{
+        file.addEventListener('dblclick', (e)=>{
             const file = e.currentTarget.querySelector('img');
             if(file.src.includes('src/img/icons/folder.png')){
                 requestContent(e.currentTarget.dataset.path)
@@ -169,7 +183,19 @@ function addListeners(){
                 })
             }
         });
-        e.addEventListener('click', (e)=>requestFileInfo(e.currentTarget.dataset.path));
+        file.addEventListener('click', (e)=>requestFileInfo(e.currentTarget.dataset.path));
+        file.addEventListener('contextmenu', (e)=>{
+            e.preventDefault();
+
+            contextMenu.classList.remove('d-none');
+            contextMenu.style.left = e.clientX + 'px';
+            contextMenu.style.top = e.clientY + 'px';
+
+            options.forEach(option=>{
+                option.dataset.path = e.currentTarget.dataset.path;
+            })
+
+        });
     });
 }
 
@@ -297,6 +323,39 @@ searchInput.addEventListener('keyup', ()=>{
     }
 
 })
+
+function removeFile(path){
+    const form = new FormData();
+
+    form.path = path;
+
+    axios({
+        method: 'POST',
+        url: 'src/php/removeFile.php',
+        data: {
+            form
+        }
+    }).then((response)=>{
+        if(response.data) requestContent(document.querySelector('#breadcrumb').dataset.path);
+    });
+}
+
+function renameFile(path){
+    const form = new FormData();
+
+    form.path = path;
+
+    axios({
+        method: 'POST',
+        url: 'src/php/renameFile.php',
+        data: {
+            form
+        }
+    }).then((response)=>{
+        console.log(response.data)
+        // if(response.data) requestContent(document.querySelector('#breadcrumb').dataset.path);
+    });
+}
 
 function showPreview(path){
     const form = new FormData();

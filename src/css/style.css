@@ -227,3 +227,18 @@ img.icon-xxss {
 .imgPreview{
     height: 720px;
 }
+
+.rightClick{
+    position: absolute;
+    height: 200px;
+    width: 180px;
+    background-color: white;
+    border-radius: 7px;
+    box-shadow: 2px 2px 15px rgba(0, 0, 0, 0.10);
+    font-size: 14px;
+}
+
+.rightClick li:hover{
+    cursor: pointer;
+    background-color: rgb(240, 240, 240);
+}
