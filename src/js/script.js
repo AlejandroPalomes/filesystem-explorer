@@ -16,7 +16,6 @@ document.querySelector('body').addEventListener('click', e=>{
 });
 
 optionsBtn.addEventListener('click', (e)=> {
-    console.log('hello')
     createMenu.classList.remove('d-none');
     createMenu.style.left = e.clientX-190 + 'px';
     createMenu.style.top = e.clientY + 'px';
@@ -43,7 +42,8 @@ createOptions.forEach(option=>{
     option.addEventListener('click', e=>{
         switch (e.target.innerText) {
             case 'Folder': $('#staticBackdrop').modal('show'); contextMenu.classList.add('d-none'); break;
-            case 'Rename': $('#renameFile').modal('show'); renameBtn.dataset.path = e.currentTarget.dataset.path; contextMenu.classList.add('d-none'); break;
+            case 'Upload File': console.log('Ready to upload file'); contextMenu.classList.add('d-none'); break;
+            case 'Upload Folder': console.log('Ready to upload folder'); contextMenu.classList.add('d-none'); break;
             default: contextMenu.classList.add('d-none'); break;
         }
     })
