@@ -215,3 +215,7 @@ img.icon-xxss {
     margin: 0 auto;
     color: white;
 }
+
+.imgPreview{
+    height: 720px;
+}

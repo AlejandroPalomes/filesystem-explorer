@@ -144,18 +144,28 @@ function printFolder(folder) {
             }else{
                 $('#mediaPlayer').modal('show');
                 document.querySelector('#mediaPlayerTitle').innerText = e.currentTarget.querySelector('h5').innerText;
-                let playFile;
-                if(e.currentTarget.dataset.type == 'mp3') playFile = document.querySelector('#audioTag');
-                if(e.currentTarget.dataset.type == 'mp4') playFile = document.querySelector('#videoTag');
+                let playFile = null;
+                let fileType = e.currentTarget.dataset.type.toLowerCase();
+                if(fileType == 'mp3') playFile = document.querySelector('#audioTag');
+                if(fileType == 'mp4') playFile = document.querySelector('#videoTag');
+                if(fileType == 'pdf') showPreview(e.currentTarget.dataset.path);
+                if(fileType == 'jpg' || fileType == 'jpeg' ||
+                fileType == 'svg' || fileType == 'png'){
+                    document.querySelector('#imgTag').src = e.currentTarget.dataset.path;
+                    document.querySelector('#imgTag').classList.remove('d-none');
+                }else{
+                    playFile.classList.remove('d-none')
+                    playFile.src = e.currentTarget.dataset.path;
+                    playFile.play();
+                }
 
-                playFile.classList.remove('d-none')
-                playFile.src = e.currentTarget.dataset.path;
-                playFile.play();
                 $('#mediaPlayer').on('hidden.bs.modal', function (e) {
-                    playFile.classList.add('d-none')
-                    playFile.pause();
+                    document.querySelector('#imgTag').classList.add('d-none');
+                    if(playFile !== null){
+                        playFile.classList.add('d-none')
+                        playFile.pause();
+                    }
                 })
-                
             }
         });
         e.addEventListener('click', (e)=>requestFileInfo(e.currentTarget.dataset.path));
@@ -296,3 +306,19 @@ searchInput.addEventListener('keyup', ()=>{
     }
 
 })
+
+function showPreview(path){
+    const form = new FormData();
+
+    form.path = path;
+
+    axios({
+        method: 'POST',
+        url: 'src/php/showPreview.php',
+        data: {
+            form
+        }
+    }).then((response)=>{
+        console.log(response.data)
+    });
+}
