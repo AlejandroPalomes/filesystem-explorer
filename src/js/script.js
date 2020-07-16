@@ -12,6 +12,7 @@ const createFolderBtn = document.querySelector('#createFolderBtn');
 const uploadFileBtn = document.querySelector('#uploadFileConfirmBtn');
 const dropArea = document.querySelector('#contentWindow');
 
+//Drag and drop to upload file
 ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
     dropArea.addEventListener(eventName, preventDefaults, false)
 });
@@ -50,6 +51,7 @@ function handleDrop(e) {
 function handleFiles(files) {
     ([...files]).forEach(uploadFile)
 };
+//End drag and drop
 
 document.querySelector('body').addEventListener('click', e => {
     if (!e.target.classList.contains('rClickOption')) contextMenu.classList.add('d-none');
@@ -411,8 +413,8 @@ function createFolder() {
         }
     }).then((response) => {
         $('#staticBackdrop').modal('hide')
-        console.log(response.data);
-        console.log(folderPath + '/' + folderName);
+        // console.log(response.data);
+        // console.log(folderPath + '/' + folderName);
         if (response.data == folderPath + '/' + folderName) {
             requestContent(folderPath);
             //amagar el modal
