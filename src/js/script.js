@@ -1,15 +1,19 @@
-axios({
+loadSideMenu();
+requestContent('../../root');
+
+function loadSideMenu(){
+    axios({
     method: 'get',
     url: 'src/php/searchdir.php',
-}).then((response) => {
-    document.querySelector('#sideMenu').innerHTML = '';
-    iterateFolders(response.data);
-    document.querySelectorAll('[data-path]').forEach(e => {
-        e.addEventListener('click', link => requestContent(link.target));
+    }).then((response)=>{
+        document.querySelector('#sideMenu').innerHTML = '';
+        iterateFolders(response.data);
+        document.querySelectorAll('#sideMenu [data-path]').forEach(e=>{
+            e.addEventListener('click', link=> requestContent(link.target, false));
+        });
     });
-});
-
-function iterateFolders(folder, parent) {
+}
+function iterateFolders(folder, parent){
     let key = Object.keys(folder);
     key.forEach(e => {
         if (folder[e].type === 'directory') {
@@ -65,10 +69,10 @@ function iterateFolders(folder, parent) {
     });
 }
 
-function requestContent(folder) {
+function requestContent(folder, init = true){
     const form = new FormData();
 
-    form.path = folder.dataset.path;
+    init ? form.path = folder : form.path = folder.dataset.path;
 
     axios({
         method: 'POST',
@@ -79,8 +83,9 @@ function requestContent(folder) {
     }).then((response) => {
         document.querySelector('#folderDisplay').innerHTML = '';
         document.querySelector('#archiveDisplay').innerHTML = '';
-        document.querySelector('#breadcrumb').dataset.path = folder.dataset.path;
-        printBreadcrumb(folder.dataset.path);
+        document.querySelector('#breadcrumb').dataset.path = form.path;
+        // printBreadcrumb(folder.dataset.path);
+        printBreadcrumb(form.path);
         printFolder(response.data);
     });
 }
@@ -96,13 +101,16 @@ function requestFileInfo(path) {
         data: {
             form
         }
-    }).then((response) => {
-        // document.querySelector('#folderDisplay').innerHTML = '';
-        // document.querySelector('#archiveDisplay').innerHTML = '';
-        // document.querySelector('#breadcrumb').dataset.fullPath = folder.dataset.path;
-        console.log(document.querySelector('#breadcrumb').dataset.path)
-        console.log(response.data)
-
+    }).then((response)=>{
+        document.querySelector('#infoPreview-img').src = 'src/img/icons/' + checkImgSrc(response.data.type);
+        document.querySelector('#infoBody-name').innerText = response.data.name;
+        document.querySelector('#infoBody-type').innerText = response.data.type;
+        document.querySelector('#infoBody-mtime').innerText = response.data.mtime;
+        let totalSize;
+        if(response.data.size < 1000) totalSize = response.data.size + ' bytes';
+        if(response.data.size > 1000 && response.data.size < 100000) totalSize = (Math.round(response.data.size/1000*10)/10) + 'KB';
+        if(response.data.size > 100000 && response.data.size < 100000000) totalSize = (Math.round(response.data.size/1000000*10)/10) + 'MB';
+        document.querySelector('#infoBody-size').innerText = totalSize;
     });
 }
 
@@ -110,50 +118,33 @@ function requestFileInfo(path) {
 function printFolder(folder) {
     let key = Object.keys(folder);
     key.forEach(e => {
-        // console.log(e)
-        // console.log(folder[e].type);
+        console.log(e)
+        console.log(folder[e].type);
         const div = document.createElement('div');
         div.className = 'card m-2 d-flex justify-content-center';
         div.dataset.path = folder[e].path;
-        let imgPath = '';
-        let imgSize = '';
-
-        switch (folder[e].type) {
-            case 'directory':
-                imgPath = 'folder.png';
-                break;
-            case 'image/png':
-                imgPath = 'png.png';
-                break;
-            case 'image/jpg':
-            case 'image/jpeg':
-                imgPath = 'jpg.png';
-                break;
-            case 'application/vnd.openxmlformats-officedocument.wordprocessingml.document':
-                imgPath = 'doc.png';
-                break;
-            case 'application/zip':
-                imgPath = 'zip.png';
-                break;
-            case 'audio/mp3':
-            case 'audio/mpeg':
-                imgPath = 'mp3.png';
-                break;
-
-            default:
-                imgPath = 'unknown.png';
-                break;
-        }
 
         div.innerHTML = `
-            <img class="mx-auto mt-2" src="src/img/icons/${imgPath}" height="65px" alt="Card image cap">
+            <img class="mx-auto mt-2" src="src/img/icons/${checkImgSrc(folder[e].type)}" height="65px" alt="Card image cap">
             <div class="card-body mx-auto mt-2">
                 <h5 class="card-title">${folder[e].name}</h5>
             </div>
         `;
 
-        // document.querySelector('#folderDisplay').append(div);
-        (folder[e].type === 'directory') ? document.querySelector('#folderDisplay').append(div): document.querySelector('#archiveDisplay').append(div);
+        (folder[e].type === 'directory') ? document.querySelector('#folderDisplay').append(div) : document.querySelector('#archiveDisplay').append(div);
+    });
+
+    const files = document.querySelectorAll('#fileDisplay .card');
+    files.forEach( e=>{
+        e.addEventListener('dblclick', (e)=>{
+            const file = e.currentTarget.querySelector('img');
+            if(file.src.includes('src/img/icons/folder.png')){
+                requestContent(e.currentTarget.dataset.path)
+            }else{
+                console.log("it's a file!")
+            }
+        });
+        e.addEventListener('click', (e)=>requestFileInfo(e.currentTarget.dataset.path));
     });
 }
 
@@ -183,10 +174,10 @@ function printBreadcrumb(path) {
     })
 
     const liElements = document.querySelectorAll('#breadcrumb-ol li');
-    liElements.forEach((e, i) => {
-        if (i + 1 < liElements.length) {
-            e.addEventListener('click', e => {
-                requestContent(e.target)
+    liElements.forEach((e, i)=>{
+        if(i+1 < liElements.length){
+            e.addEventListener('click', e=>{
+                requestContent(e.target, false)
             })
         }
     });
@@ -227,3 +218,36 @@ function submitFolder() {
 }
 
 document.querySelector('.createFolderButton').addEventListener('click', createFolder);
+function checkImgSrc(type){
+    let finalPath = '';
+
+    switch (type) {
+        case 'directory': finalPath = 'folder.png'; break;
+        case 'PNG':
+        case 'png': finalPath = 'png.png'; break;
+        case 'jpg':
+        case 'JPG':
+        case 'JPEG':
+        case 'jpeg': finalPath = 'jpg.png'; break;
+        case 'svg+xml':
+        case 'svg': finalPath = 'svg.png'; break;
+        case 'docx':
+        case 'doc': finalPath = 'doc.png'; break;
+        case 'ppt':
+        case 'pptx': finalPath = 'ppt.png'; break;
+        case 'odt': finalPath = 'odt.png'; break;
+        case 'zip': finalPath = 'zip.png'; break;
+        case 'mp3':
+        case 'mpeg': finalPath = 'mp3.png'; break;
+        case 'mp4': finalPath = 'mp4.png'; break;
+        case 'rar': finalPath = 'rar.png'; break;
+        case 'pdf': finalPath = 'pdf.png'; break;
+        case 'csv': finalPath = 'csv.png'; break;
+        case 'txt': finalPath = 'txt.png'; break;
+        case 'exe': finalPath = 'exe.png'; break;
+
+        default: finalPath = 'unknown.png'; break;
+    }
+
+    return finalPath;
+}
