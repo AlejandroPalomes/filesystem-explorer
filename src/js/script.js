@@ -16,39 +16,40 @@ const dropArea = document.querySelector('#contentWindow');
     dropArea.addEventListener(eventName, preventDefaults, false)
 });
 
-function preventDefaults (e) {
+function preventDefaults(e) {
     e.preventDefault();
     e.stopPropagation();
 };
 
 ['dragenter', 'dragover'].forEach(eventName => {
     dropArea.addEventListener(eventName, highlight, false)
-  })
-  
-  ;['dragleave', 'drop'].forEach(eventName => {
-    dropArea.addEventListener(eventName, unhighlight, false)
-  })
-  
-  function highlight(e) {
-    dropArea.classList.add('highlight')
-  }
-  
-  function unhighlight(e) {
-    dropArea.classList.remove('highlight')
-  }
+});
 
-  dropArea.addEventListener('drop', handleDrop, false)
+
+['dragleave', 'drop'].forEach(eventName => {
+    dropArea.addEventListener(eventName, unhighlight, false)
+});
+
+function highlight(e) {
+    dropArea.classList.add('highlight')
+};
+
+function unhighlight(e) {
+    dropArea.classList.remove('highlight')
+};
+
+dropArea.addEventListener('drop', handleDrop, false)
 
 function handleDrop(e) {
-  let dt = e.dataTransfer
-  let files = dt.files
+    let dt = e.dataTransfer
+    let files = dt.files
 
-  handleFiles(files)
-}
+    handleFiles(files)
+};
 
 function handleFiles(files) {
     ([...files]).forEach(uploadFile)
-}
+};
 
 document.querySelector('body').addEventListener('click', e => {
     if (!e.target.classList.contains('rClickOption')) contextMenu.classList.add('d-none');
@@ -491,27 +492,28 @@ function uploadFile(file) {
     const form = new FormData();
     const targetPath = document.querySelector('#breadcrumb').dataset.path;
     const newPath = targetPath.replace(/\//g, '~');
-    console.log(targetPath);
 
-    form.append("file", file, file.name,);
+    form.append("file", file, file.name, );
     form.append("path", file, newPath);
 
     axios({
-        method: 'post',
-        url: 'src/php/uploadFile.php',
-        data: form, targetPath,
-        headers: {'Content-Type': 'multipart/form-data' }
-    })
-    .then(function (response) {
-        //handle success
-        console.log(response.data);
-        if(response.data === 'sizeExceed') alert('File too big!')
-        requestContent(targetPath);
-    })
-    .catch(function (response) {
-        //handle error
-        console.log('response');
-    });
+            method: 'post',
+            url: 'src/php/uploadFile.php',
+            data: form,
+            targetPath,
+            headers: {
+                'Content-Type': 'multipart/form-data'
+            }
+        })
+        .then(function (response) {
+            //handle success
+            if (response.data === 'sizeExceed') alert('File too big!')
+            requestContent(targetPath);
+        })
+        .catch(function (response) {
+            //handle error
+            console.log('response');
+        });
 }
 
 function showPreview(path) {

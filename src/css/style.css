@@ -251,5 +251,7 @@ img.icon-xxss {
 }
 
 .highlight{
-    border: 1px solid red;
+    border: 1px solid rgba(15, 88, 188, 0.5);
+    border-radius: 10px;
+    cursor: pointer;
 }
