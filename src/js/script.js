@@ -26,7 +26,7 @@ renameBtn.addEventListener('click', e=>{
     $('#renameFile').modal('hide');
 })
 
-//createFolderBtn.addEventListener('click', createFolder);
+createFolderBtn.addEventListener('click', createFolder);
 
 options.forEach(option=>{
     option.addEventListener('click', e=>{
@@ -144,6 +144,7 @@ function requestContent(folder, init = true) {
         document.querySelector('#archiveDisplay').innerHTML = '';
         document.querySelector('#breadcrumb').dataset.path = form.path;
         // printBreadcrumb(folder.dataset.path);
+        console.log(form.path);
         printBreadcrumb(form.path);
         printFolder(response.data);
     });
@@ -351,11 +352,11 @@ console.log('Hola');
             dirdata
         }
     }).then((response) => {
+        $('#staticBackdrop').modal('hide')
         console.log(response.data);
         console.log(folderPath + '/' + folderName);
         if (response.data == folderPath + '/' + folderName) {
-            requestContent(document.querySelector('#breadcrumb'));
-            hideFolder();
+            requestContent(folderPath);
             //amagar el modal
         } else {
             //posar missatge al modal de error
@@ -364,11 +365,10 @@ console.log('Hola');
     });
 }
 
-//Hide Folder Modal
-function hideFolder() {
-    let hideModal = document.querySelector('#staticBackdrop');
-    hideModal.modal('hide');
-}
+
+
+
+
 
 const searchInput = document.querySelector('#searchFolder');
 searchInput.addEventListener('keyup', () => {
