@@ -3,17 +3,25 @@ requestContent('../../root');
 
 const options = document.querySelectorAll('.rClickOption');
 const contextMenu = document.querySelector('#rightClick');
+const renameBtn = document.querySelector('#renameConfirmBtn');
+const renameInp = document.querySelector('#renameInput');
+
+document.querySelector('body').addEventListener('click', e=>{if(!e.target.classList.contains('rClickOption')) contextMenu.classList.add('d-none')});
+renameBtn.addEventListener('click', e=>{
+    renameFile(e.target.dataset.path, renameInp.value);
+    $('#renameFile').modal('hide');
+})
 
 options.forEach(option=>{
     option.addEventListener('click', e=>{
-        console.log('in clik first', e.target.innerText)
         switch (e.target.innerText) {
             case 'Remove': removeFile(e.currentTarget.dataset.path); contextMenu.classList.add('d-none'); break;
-            case 'Rename': renameFile(e.currentTarget.dataset.path); contextMenu.classList.add('d-none'); break;
+            case 'Rename': $('#renameFile').modal('show'); renameBtn.dataset.path = e.currentTarget.dataset.path; contextMenu.classList.add('d-none'); break;
             default: contextMenu.classList.add('d-none'); break;
         }
     })
 })
+
 
 function loadSideMenu(){
     axios({
@@ -326,7 +334,6 @@ searchInput.addEventListener('keyup', ()=>{
 
 function removeFile(path){
     const form = new FormData();
-
     form.path = path;
 
     axios({
@@ -340,10 +347,10 @@ function removeFile(path){
     });
 }
 
-function renameFile(path){
+function renameFile(path, name){
     const form = new FormData();
-
     form.path = path;
+    form.name = name;
 
     axios({
         method: 'POST',
@@ -352,8 +359,7 @@ function renameFile(path){
             form
         }
     }).then((response)=>{
-        console.log(response.data)
-        // if(response.data) requestContent(document.querySelector('#breadcrumb').dataset.path);
+        if(response.data) requestContent(document.querySelector('#breadcrumb').dataset.path);
     });
 }
 

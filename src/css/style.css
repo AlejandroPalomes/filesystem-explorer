@@ -13,6 +13,7 @@ body {
 
 button:focus,
 video:focus,
+input:focus,
 audio:focus{
     outline: none;
 }
