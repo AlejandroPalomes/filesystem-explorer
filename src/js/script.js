@@ -144,7 +144,6 @@ function requestContent(folder, init = true) {
         document.querySelector('#archiveDisplay').innerHTML = '';
         document.querySelector('#breadcrumb').dataset.path = form.path;
         // printBreadcrumb(folder.dataset.path);
-        console.log(form.path);
         printBreadcrumb(form.path);
         printFolder(response.data);
     });
@@ -344,7 +343,6 @@ function createFolder() {
     let folderPath = document.querySelector('#breadcrumb').dataset.path;
     dirdata.folderName = folderName;
     dirdata.folderPath = folderPath;
-console.log('Hola');
     axios({
         method: 'POST',
         url: 'src/php/createFolder.php',
