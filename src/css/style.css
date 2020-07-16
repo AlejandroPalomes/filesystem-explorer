@@ -255,3 +255,9 @@ img.icon-xxss {
     border-radius: 10px;
     cursor: pointer;
 }
+
+#iframepdf{
+    height: 720px;
+    width: 1280px;
+    background-color: white;
+}

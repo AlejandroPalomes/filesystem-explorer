@@ -267,19 +267,24 @@ function addListeners() {
                 let fileType = e.currentTarget.dataset.type.toLowerCase();
                 if (fileType == 'mp3') playFile = document.querySelector('#audioTag');
                 if (fileType == 'mp4') playFile = document.querySelector('#videoTag');
-                if (fileType == 'pdf') showPreview(e.currentTarget.dataset.path);
+                // if (fileType == 'pdf') showPreview(e.currentTarget.dataset.path);
                 if (fileType == 'jpg' || fileType == 'jpeg' ||
                     fileType == 'svg' || fileType == 'png') {
                     document.querySelector('#imgTag').src = e.currentTarget.dataset.path;
                     document.querySelector('#imgTag').classList.remove('d-none');
-                } else {
+                } else if((fileType == 'mp3')||(fileType == 'mp4')){
                     playFile.classList.remove('d-none')
                     playFile.src = e.currentTarget.dataset.path;
                     playFile.play();
+                }else{
+                    document.querySelector('#iframepdf').src = removeAllButLast(e.currentTarget.dataset.path, '.').replace('/', '').replace('/', '');
+                    document.querySelector('#iframepdf').classList.remove('d-none');
+                    // showPreview(e.currentTarget.dataset.path);
                 }
-
+                
                 $('#mediaPlayer').on('hidden.bs.modal', function (e) {
                     document.querySelector('#imgTag').classList.add('d-none');
+                    document.querySelector('#iframepdf').classList.add('d-none');
                     if (playFile !== null) {
                         playFile.classList.add('d-none')
                         playFile.pause();
@@ -301,6 +306,11 @@ function addListeners() {
 
         });
     });
+}
+
+function removeAllButLast(string, token) {
+    var parts = string.split(token);
+    return parts.slice(0,-1).join('') + token + parts.slice(-1)
 }
 
 function printBreadcrumb(path) {
@@ -517,17 +527,19 @@ function uploadFile(file) {
 }
 
 function showPreview(path) {
-    const form = new FormData();
+    // const form = new FormData();
 
-    form.path = path;
+    // form.path = path;
 
-    axios({
-        method: 'POST',
-        url: 'src/php/showPreview.php',
-        data: {
-            form
-        }
-    }).then((response) => {
-        console.log(response.data)
-    });
+    // axios({
+    //     method: 'POST',
+    //     url: 'src/php/showPreview.php',
+    //     data: {
+    //         form
+    //     }
+    // }).then((response) => {
+    //     console.log(response.data)
+    // });
+    // console.log(path)
+    document.querySelector('#iframepdf').src = path;
 }
