@@ -123,6 +123,7 @@ function printFolder(folder) {
         const div = document.createElement('div');
         div.className = 'card m-2 d-flex justify-content-center';
         div.dataset.path = folder[e].path;
+        div.dataset.type = folder[e].type;
 
         div.innerHTML = `
             <img class="mx-auto mt-2" src="src/img/icons/${checkImgSrc(folder[e].type)}" height="65px" alt="Card image cap">
@@ -141,7 +142,20 @@ function printFolder(folder) {
             if(file.src.includes('src/img/icons/folder.png')){
                 requestContent(e.currentTarget.dataset.path)
             }else{
-                console.log("it's a file!")
+                $('#mediaPlayer').modal('show');
+                document.querySelector('#mediaPlayerTitle').innerText = e.currentTarget.querySelector('h5').innerText;
+                let playFile;
+                if(e.currentTarget.dataset.type == 'mp3') playFile = document.querySelector('#audioTag');
+                if(e.currentTarget.dataset.type == 'mp4') playFile = document.querySelector('#videoTag');
+
+                playFile.classList.remove('d-none')
+                playFile.src = e.currentTarget.dataset.path;
+                playFile.play();
+                $('#mediaPlayer').on('hidden.bs.modal', function (e) {
+                    playFile.classList.add('d-none')
+                    playFile.pause();
+                })
+                
             }
         });
         e.addEventListener('click', (e)=>requestFileInfo(e.currentTarget.dataset.path));
@@ -244,11 +258,41 @@ function createFolder() {
     });
 }
 
-
 //Submit Form
 function submitFolder() {
     document.getElementById('folderPath').value = document.querySelector('#breadcrumb').dataset.path;
     document.querySelector('#createFolderForm').submit();
 }
 
-document.querySelector('.createFolderButton').addEventListener('click', createFolder);
+const optionsBtn = document.querySelector('#optionsButton');
+optionsBtn.addEventListener('click', createFolder);
+
+const searchInput = document.querySelector('#searchFolder');
+searchInput.addEventListener('keyup', ()=>{
+    const form = new FormData();
+    const previousPath = document.querySelector('#breadcrumb').dataset.path;
+    form.file = searchInput.value;
+    
+    if(searchInput.value.length){
+        optionsButton.classList.add('d-none')
+        axios({
+            method: 'POST',
+            url: 'src/php/searchFile.php',
+            data: {
+                form
+            }
+        }).then((response)=>{
+            console.log(response.data);
+            document.querySelector('#folderDisplay').innerHTML = '';
+            document.querySelector('#archiveDisplay').innerHTML = '';
+            // document.querySelector('#breadcrumb').dataset.path = '../../root';
+            // // printBreadcrumb(folder.dataset.path);
+            printBreadcrumb('../../root');
+            printFolder(response.data);
+        });
+    }else{
+        optionsButton.classList.remove('d-none')
+        requestContent(previousPath);
+    }
+
+})

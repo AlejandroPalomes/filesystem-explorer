@@ -11,7 +11,9 @@ body {
     min-height: 100vh;
 }
 
-button:focus{
+button:focus,
+video:focus,
+audio:focus{
     outline: none;
 }
 
@@ -183,4 +185,33 @@ img.icon-xxss {
     margin-top:10px;
     margin-left: 20px;
     
+}
+
+.modal-dialog{
+    height: 100vh;
+    margin: 0 auto;
+    padding: 0;
+}
+
+.modal-container{
+    background-color: none;
+    max-width: 1300px;
+    position: relative;
+    display: -ms-flexbox;
+    display: flex;
+    justify-content: center;
+    -ms-flex-direction: column;
+    flex-direction: column;
+    /* pointer-events: auto; */
+    background-clip: padding-box;
+    flex-grow: 1;
+}
+
+.pointer-events{
+    pointer-events: auto;
+}
+
+.modal__player--title{
+    margin: 0 auto;
+    color: white;
 }

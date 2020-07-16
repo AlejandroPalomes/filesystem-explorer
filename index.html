@@ -21,7 +21,7 @@
 
         <div class="collapse navbar-collapse " id="navbarSupportedContent">
             <div class="col-4 ml-auto">
-                <input class="form-control mr-sm-2" type="search" placeholder="Search file" aria-label="Search">
+                <input id="searchFolder" class="form-control mr-sm-2" type="search" placeholder="Search file" aria-label="Search">
             </div>
         </div>
     </nav>
@@ -39,7 +39,7 @@
                     </ol>
                 </nav>
                 <!-- Button trigger modal -->
-                <button type="button" class="button_principal mr-3" data-toggle="modal"
+                <button id="optionsButton" type="button" class="button_principal mr-3" data-toggle="modal"
                     data-target="#staticBackdrop">+</button>
             </div>
             <div id="fileDisplay">
@@ -111,6 +111,21 @@
             </div>
         </div>
     </footer>
+    <div class="modal fade" id="mediaPlayer" tabindex="-1" role="dialog" aria-labelledby="mediaPlayerTitle" aria-hidden="true">
+        <div class="modal-dialog d-flex flex-column" role="document">
+            <div class="d-flex justify-content-center pt-5">
+                <h5 class="modal__player--title pt-5" id="mediaPlayerTitle">Modal title</h5>
+            </div>
+            <div class="modal-container d-flex flex-column align-items-center">
+                <audio id="audioTag" class="d-none pointer-events" controls>
+                    <source src="" type="audio/mp3">
+                </audio>
+                <video id="videoTag" class="d-none" width="1280" height="720" controls>
+                    <source src="" type="video/mp4">
+                </video>
+            </div>
+        </div>
+    </div>
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"
         integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous">
     </script>
