@@ -229,7 +229,8 @@ img.icon-xxss {
     height: 720px;
 }
 
-.rightClick{
+.rightClick,
+.createOptions{
     position: absolute;
     height: 200px;
     width: 180px;
@@ -239,7 +240,12 @@ img.icon-xxss {
     font-size: 14px;
 }
 
-.rightClick li:hover{
+.createOptions{
+    height: 125px;
+}
+
+.rightClick li:hover,
+.createOptions li:hover{
     cursor: pointer;
     background-color: rgb(240, 240, 240);
 }
