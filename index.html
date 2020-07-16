@@ -12,105 +12,151 @@
 
 <body>
     <!-- Navbar -->
-    <nav class="navbar navbar-expand-lg navbar-light bg-navbar shadow-sm">
-        <a class="navbar-brand ml-4" href="#"><img class="logo" src="src/img/logos/logo.png"></a>
-        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
-            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon"></span>
-        </button>
-
-        <div class="collapse navbar-collapse " id="navbarSupportedContent">
-            <div class="col-4 ml-auto">
-                <input class="form-control mr-sm-2" type="search" placeholder="Search file" aria-label="Search">
+    <div class="general__container d-flex flex-column justify-content-between">
+        <nav class="navbar navbar-expand-lg navbar-light bg-navbar shadow-sm">
+            <a class="navbar-brand ml-4" href="#"><img class="logo" src="src/img/logos/logo.png"></a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+                aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+    
+            <div class="collapse navbar-collapse " id="navbarSupportedContent">
+                <div class="col-4 ml-auto">
+                    <input id="searchFolder" class="form-control mr-sm-2" type="search" placeholder="Search file" aria-label="Search">
+                </div>
             </div>
-        </div>
-    </nav>
-    <!-- End Navbar-->
-    <!-- File Zone-->
-    <div class="main d-flex justify-content-between">
-        <div class="menu shadow">
-            <ul id='sideMenu' class="sideMenu nav flex-column sidebar">
-            </ul>
-        </div>
-        <div id="contentWindow">
-            <div class="contentWindow__navbar d-flex justify-content-between align-items-center">
-                <nav id="breadcrumb" class="contentWindow__breadcrumb" aria-label="breadcrumb">
-                    <ol id="breadcrumb-ol" class="breadcrumb">
-                    </ol>
-                </nav>
-                <!-- Button trigger modal -->
-                <button type="button" class="button_principal mr-3" data-toggle="modal"
-                    data-target="#staticBackdrop">+</button>
+        </nav>
+        <!-- End Navbar-->
+        <!-- File Zone-->
+        <div class="main d-flex justify-content-between">
+            <div class="menu shadow">
+                <ul id='sideMenu' class="sideMenu nav flex-column sidebar">
+                </ul>
             </div>
-            <div id="fileDisplay">
-                <div id="folderDisplay" class="d-flex flex-wrap"></div>
-                <div id="archiveDisplay" class="d-flex flex-wrap"></div>
-            </div>
-
-            <!-- Modal -->
-            <div class="modal fade" id="staticBackdrop" data-backdrop="static" data-keyboard="false" tabindex="-1"
-                role="dialog" aria-labelledby="staticBackdropLabel" aria-hidden="true">
-                <div class="modal-dialog">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h5 class="modal-title" id="staticBackdropLabel">Modal title</h5>
-                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                <span aria-hidden="true">&times;</span>
-                            </button>
+            <div id="contentWindow">
+                <div class="contentWindow__navbar d-flex justify-content-between align-items-center">
+                    <nav id="breadcrumb" class="contentWindow__breadcrumb" aria-label="breadcrumb">
+                        <ol id="breadcrumb-ol" class="breadcrumb">
+                        </ol>
+                    </nav>
+                    <!-- Button trigger modal -->
+                    <button id="optionsButton" type="button" class="button_principal mr-3" data-toggle="modal"
+                        data-target="#staticBackdrop">+</button>
+                </div>
+                <div id="fileDisplay" class="px-3">
+                    <div id="folderDisplay" class="d-flex flex-wrap"></div>
+                    <div id="archiveDisplay" class="d-flex flex-wrap"></div>
+                </div>
+    
+                <!-- Modal -->
+                <div class="modal fade" id="staticBackdrop" data-backdrop="static" data-keyboard="false" tabindex="-1"
+                    role="dialog" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="staticBackdropLabel">Modal title</h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                <form action="src/php/createFolder.php" method="post" id="createFolderForm">
+                                    <input type="hidden" name="folderPath" id="folderPath"/>
+                                    <input class="create_folder" type="text" name="folderName" id="folderName" placeholder="New Folder"/>
+                                </form>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                                <button type="button" class="btn btn-primary createFolderButton">Create</button>
+                            </div>
                         </div>
-                        <div class="modal-body">
-                            <form action="src/php/createFolder.php" method="post" id="createFolderForm">
-                                <input type="hidden" name="folderPath" id="folderPath"/>
-                                <input class="create_folder" type="text" name="folderName" id="folderName" placeholder="New Folder"/>
-                            </form>
+                    </div>
+                </div>
+            </div>
+            <div class="infoWindow">
+                <div class="infoPreview d-flex align-items-center justify-content-center">
+                    <img id="infoPreview-img" src="src/img/icons/unknown.png" height="50%" alt="">
+                </div>
+                <div class="infoBody  d-flex align-items-center justify-content-center">
+                    <div class="infoBody__contaienr">
+                        <div class="d-flex flex-column mb-3">
+                            <span>Name</span>
+                            <span id="infoBody-name">Undefined</span>
                         </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-                            <button type="button" class="btn btn-primary createFolderButton">Create</button>
+                        <div class="d-flex flex-column mb-3">
+                            <span>Type</span>
+                            <span id="infoBody-type">Unknown</span>
+                        </div>
+                        <div class="d-flex flex-column mb-3">
+                            <span>Size</span>
+                            <span id="infoBody-size">0kb</span>
+                        </div>
+                        <div class="d-flex flex-column mb-3">
+                            <span>Last modification</span>
+                            <span id="infoBody-mtime">Unknown</span>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-        <div class="infoWindow">
-            <div class="infoPreview d-flex align-items-center justify-content-center">
-                <img id="infoPreview-img" src="src/img/icons/unknown.png" height="50%" alt="">
+        <!--Footer-->
+        <footer class="footer">
+            <div class="d-flex justify-content-between align-items-center">
+                <span class="font-weight-normal ml-4">Made by Sandra Mitjans & Alejandro Palomes</span>
+                <div class="mr-4">
+                    <a href=""><img class="icon-xxss" src="src/img/logos/linkedin.png"></a>
+                    <a href=""><img class="icon-xxss" src="src/img/logos/github.png"></a>
+                    <a href=""><img class="icon-xxss" src="src/img/logos/instagram.png"></a>
+                </div>
             </div>
-            <div class="infoBody  d-flex align-items-center justify-content-center">
-                <div class="infoBody__contaienr">
-                    <div class="d-flex flex-column mb-3">
-                        <span>Name</span>
-                        <span id="infoBody-name">Undefined</span>
-                    </div>
-                    <div class="d-flex flex-column mb-3">
-                        <span>Type</span>
-                        <span id="infoBody-type">Unknown</span>
-                    </div>
-                    <div class="d-flex flex-column mb-3">
-                        <span>Size</span>
-                        <span id="infoBody-size">0kb</span>
-                    </div>
-                    <div class="d-flex flex-column mb-3">
-                        <span>Last modification</span>
-                        <span id="infoBody-mtime">Unknown</span>
-                    </div>
+        </footer>
+        <div id="rightClick" class="rightClick d-none">
+            <ul class="mt-2">
+                <li class="pt-2 pb-2 pl-4 rClickOption">Preview</li>
+                <li class="pt-2 pb-2 pl-4 rClickOption">Rename</li>
+                <li class="pt-2 pb-2 pl-4 rClickOption">Move to</li>
+                <li class="pt-2 pb-2 pl-4 rClickOption">Download</li>
+                <li class="pt-2 pb-2 pl-4 rClickOption">Remove</li>
+            </ul>
+
+        </div>
+    </div>
+    <div class="modal fade" id="mediaPlayer" tabindex="-1" role="dialog" aria-labelledby="mediaPlayerTitle" aria-hidden="true">
+        <div class="modal-dialog d-flex flex-column" role="document">
+            <div class="d-flex justify-content-center pt-5">
+                <h5 class="modal__player--title pt-5" id="mediaPlayerTitle"></h5>
+            </div>
+            <div class="modal-container d-flex flex-column align-items-center">
+                <audio id="audioTag" class="d-none pointer-events" controls>
+                    <source src="" type="audio/mp3">
+                </audio>
+                <video id="videoTag" class="d-none pointer-events" width="1280" height="720" controls>
+                    <source src="" type="video/mp4">
+                </video>
+                <img id="imgTag" class="d-none imgPreview pointer-events" src="" alt="">
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" id="renameFile" tabindex="-1" role="dialog" aria-labelledby="renameFileTitle" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLongTitle">Rename</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <input type="text" name="" id="renameInput">
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button id="renameConfirmBtn" type="button" class="btn btn-primary">Save changes</button>
                 </div>
             </div>
         </div>
     </div>
-    <!--Footer-->
-    <footer class="footer">
-        <div class="row">
-            <div class="col-8 mr-auto ml-5">
-                <span class="font-weight-normal">Made by Sandra Mitjans & Alejandro Palomes</span>
-            </div>
-            <div class="col-2 ml-auto">
-                <a href=""><img class="icon-xxss" src="src/img/logos/linkedin.png"></a>
-                <a href=""><img class="icon-xxss" src="src/img/logos/github.png"></a>
-                <a href=""><img class="icon-xxss" src="src/img/logos/instagram.png"></a>
-            </div>
-        </div>
-    </footer>
+    
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"
         integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous">
     </script>

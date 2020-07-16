@@ -1,6 +1,28 @@
 loadSideMenu();
 requestContent('../../root');
 
+const options = document.querySelectorAll('.rClickOption');
+const contextMenu = document.querySelector('#rightClick');
+const renameBtn = document.querySelector('#renameConfirmBtn');
+const renameInp = document.querySelector('#renameInput');
+
+document.querySelector('body').addEventListener('click', e=>{if(!e.target.classList.contains('rClickOption')) contextMenu.classList.add('d-none')});
+renameBtn.addEventListener('click', e=>{
+    renameFile(e.target.dataset.path, renameInp.value);
+    $('#renameFile').modal('hide');
+})
+
+options.forEach(option=>{
+    option.addEventListener('click', e=>{
+        switch (e.target.innerText) {
+            case 'Remove': removeFile(e.currentTarget.dataset.path); contextMenu.classList.add('d-none'); break;
+            case 'Rename': $('#renameFile').modal('show'); renameBtn.dataset.path = e.currentTarget.dataset.path; contextMenu.classList.add('d-none'); break;
+            default: contextMenu.classList.add('d-none'); break;
+        }
+    })
+})
+
+
 function loadSideMenu(){
     axios({
     method: 'get',
@@ -118,11 +140,10 @@ function requestFileInfo(path) {
 function printFolder(folder) {
     let key = Object.keys(folder);
     key.forEach(e => {
-        console.log(e)
-        console.log(folder[e].type);
         const div = document.createElement('div');
         div.className = 'card m-2 d-flex justify-content-center';
         div.dataset.path = folder[e].path;
+        div.dataset.type = folder[e].type;
 
         div.innerHTML = `
             <img class="mx-auto mt-2" src="src/img/icons/${checkImgSrc(folder[e].type)}" height="65px" alt="Card image cap">
@@ -133,28 +154,58 @@ function printFolder(folder) {
 
         (folder[e].type === 'directory') ? document.querySelector('#folderDisplay').append(div) : document.querySelector('#archiveDisplay').append(div);
     });
+    addListeners();
+}
 
+function addListeners(){
     const files = document.querySelectorAll('#fileDisplay .card');
-    files.forEach( e=>{
-        e.addEventListener('dblclick', (e)=>{
+    files.forEach( file=>{
+        file.addEventListener('dblclick', (e)=>{
             const file = e.currentTarget.querySelector('img');
             if(file.src.includes('src/img/icons/folder.png')){
                 requestContent(e.currentTarget.dataset.path)
             }else{
-                console.log("it's a file!")
+                $('#mediaPlayer').modal('show');
+                document.querySelector('#mediaPlayerTitle').innerText = e.currentTarget.querySelector('h5').innerText;
+                let playFile = null;
+                let fileType = e.currentTarget.dataset.type.toLowerCase();
+                if(fileType == 'mp3') playFile = document.querySelector('#audioTag');
+                if(fileType == 'mp4') playFile = document.querySelector('#videoTag');
+                if(fileType == 'pdf') showPreview(e.currentTarget.dataset.path);
+                if(fileType == 'jpg' || fileType == 'jpeg' ||
+                fileType == 'svg' || fileType == 'png'){
+                    document.querySelector('#imgTag').src = e.currentTarget.dataset.path;
+                    document.querySelector('#imgTag').classList.remove('d-none');
+                }else{
+                    playFile.classList.remove('d-none')
+                    playFile.src = e.currentTarget.dataset.path;
+                    playFile.play();
+                }
+
+                $('#mediaPlayer').on('hidden.bs.modal', function (e) {
+                    document.querySelector('#imgTag').classList.add('d-none');
+                    if(playFile !== null){
+                        playFile.classList.add('d-none')
+                        playFile.pause();
+                    }
+                })
             }
         });
-        e.addEventListener('click', (e)=>requestFileInfo(e.currentTarget.dataset.path));
+        file.addEventListener('click', (e)=>requestFileInfo(e.currentTarget.dataset.path));
+        file.addEventListener('contextmenu', (e)=>{
+            e.preventDefault();
+
+            contextMenu.classList.remove('d-none');
+            contextMenu.style.left = e.clientX + 'px';
+            contextMenu.style.top = e.clientY + 'px';
+
+            options.forEach(option=>{
+                option.dataset.path = e.currentTarget.dataset.path;
+            })
+
+        });
     });
 }
-
-
-const files = document.querySelectorAll('#fileDisplay .card');
-files.forEach(e => {
-    e.addEventListener('dblclick', () => console.log('ho'));
-    e.addEventListener('click', (e) => requestFileInfo(e.currentTarget.dataset.path));
-});
-
 
 function printBreadcrumb(path) {
     const elements = path.replace('/', '').replace(/\./g, '').replace('/', '').split('/');
@@ -183,41 +234,6 @@ function printBreadcrumb(path) {
     });
 }
 
-// Create Folder
-function createFolder() {
-    let dirdata = new FormData();
-    let folderName = document.getElementById('folderName').value;
-    let folderPath = document.querySelector('#breadcrumb').dataset.path;
-    dirdata.folderName = folderName;
-    dirdata.folderPath = folderPath;
-
-    axios({
-        method: 'POST',
-        url: 'src/php/createFolder.php',
-        data: {
-            dirdata
-        }
-    }).then((response) => {
-        console.log(response.data);
-        console.log(folderPath + '/' + folderName);
-        if(response.data == folderPath + '/' + folderName){
-            requestContent(document.querySelector('#breadcrumb'));
-            //amagar el modal
-        }else{
-            //posar missatge al modal de error
-            alert('Failed to create');
-        }
-    });
-}
-
-
-//Submit Form
-function submitFolder() {
-    document.getElementById('folderPath').value = document.querySelector('#breadcrumb').dataset.path;
-    document.querySelector('#createFolderForm').submit();
-}
-
-document.querySelector('.createFolderButton').addEventListener('click', createFolder);
 function checkImgSrc(type){
     let finalPath = '';
 
@@ -250,4 +266,115 @@ function checkImgSrc(type){
     }
 
     return finalPath;
+}
+
+// Create Folder
+function createFolder() {
+    let dirdata = new FormData();
+    let folderName = document.getElementById('folderName').value;
+    let folderPath = document.querySelector('#breadcrumb').dataset.path;
+    dirdata.folderName = folderName;
+    dirdata.folderPath = folderPath;
+
+    axios({
+        method: 'POST',
+        url: 'src/php/createFolder.php',
+        data: {
+            dirdata
+        }
+    }).then((response) => {
+        // console.log(response.data);
+        // console.log(folderPath + '/' + folderName);
+        if(response.data == folderPath + '/' + folderName){
+            requestContent(document.querySelector('#breadcrumb'));
+            //amagar el modal
+        }else{
+            //posar missatge al modal de error
+            alert('Failed to create');
+        }
+    });
+}
+
+//Submit Form
+function submitFolder() {
+    document.getElementById('folderPath').value = document.querySelector('#breadcrumb').dataset.path;
+    document.querySelector('#createFolderForm').submit();
+}
+
+const optionsBtn = document.querySelector('#optionsButton');
+optionsBtn.addEventListener('click', createFolder);
+
+const searchInput = document.querySelector('#searchFolder');
+searchInput.addEventListener('keyup', ()=>{
+    const form = new FormData();
+    const previousPath = document.querySelector('#breadcrumb').dataset.path;
+    form.file = searchInput.value;
+    
+    if(searchInput.value.length){
+        optionsButton.classList.add('d-none')
+        axios({
+            method: 'POST',
+            url: 'src/php/searchFile.php',
+            data: {
+                form
+            }
+        }).then((response)=>{
+            document.querySelector('#folderDisplay').innerHTML = '';
+            document.querySelector('#archiveDisplay').innerHTML = '';
+
+            printBreadcrumb('../../root');
+            printFolder(response.data);
+        });
+    }else{
+        optionsButton.classList.remove('d-none')
+        requestContent(previousPath);
+    }
+
+})
+
+function removeFile(path){
+    const form = new FormData();
+    form.path = path;
+
+    axios({
+        method: 'POST',
+        url: 'src/php/removeFile.php',
+        data: {
+            form
+        }
+    }).then((response)=>{
+        if(response.data) requestContent(document.querySelector('#breadcrumb').dataset.path);
+    });
+}
+
+function renameFile(path, name){
+    const form = new FormData();
+    form.path = path;
+    form.name = name;
+
+    axios({
+        method: 'POST',
+        url: 'src/php/renameFile.php',
+        data: {
+            form
+        }
+    }).then((response)=>{
+        if(response.data) requestContent(document.querySelector('#breadcrumb').dataset.path);
+    });
+}
+
+function showPreview(path){
+    const form = new FormData();
+
+    form.path = path;
+
+    axios({
+        method: 'POST',
+        url: 'src/php/showPreview.php',
+        data: {
+            form
+        }
+    }).then((response)=>{
+        console.log(response.data)
+    });
 }
