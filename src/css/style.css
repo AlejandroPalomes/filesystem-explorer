@@ -87,7 +87,7 @@ li {
 
 .card {
     width: 100px;
-    height: 110px;
+    max-height: 122px;
     transition: 0.2s ease;
     border: none;
 }
@@ -102,9 +102,11 @@ li {
     padding: 3px;
 }
 
-h5.card-title{
+h6.card-title{
     color: rgb(47, 47, 47);
     font-size:14px !important;
+    text-align: center;
+    max-height: 37px;
 }
 
 /*___ Navbar___*/

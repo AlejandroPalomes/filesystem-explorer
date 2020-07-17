@@ -282,13 +282,27 @@ function printFolder(folder) {
         div.innerHTML = `
             <img class="mx-auto mt-2" src="src/img/icons/${checkImgSrc(folder[e].type)}" height="65px" alt="Card image cap">
             <div class="card-body mx-auto mt-2">
-                <h5 class="card-title">${folder[e].name}</h5>
+                <h6 class="card-title mx-auto">${folder[e].name}</h6>
             </div>
         `;
-
         (folder[e].type === 'directory') ? document.querySelector('#folderDisplay').append(div): document.querySelector('#archiveDisplay').append(div);
     });
+    document.querySelectorAll('h6').forEach(e=>{
+        if($(e).innerHeight() > 32){
+            console.log('hey!')
+            e.textContent = truncate(e.textContent, 20, false);
+        }
+    });
     addListeners();
+}
+
+function truncate(str, n, useWordBoundary) {
+    if (str.length <= n) {
+        return str;
+    }
+
+    var subString = str.substr(0, n - 1);
+    return (useWordBoundary ? subString.substr(0, subString.lastIndexOf(" ")) : subString) + " ...";
 }
 
 function addListeners() {

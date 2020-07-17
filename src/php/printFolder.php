@@ -18,10 +18,6 @@
                 }else{
                     $file->type = $extension;
                 }
-                // $file->size = filesize($newDir);
-                // $file->mtime = filemtime($newDir);
-                // $file->content = dirToArray($newDir);
-                // $file->parent = $route;
 
                 $result[$value] = $file;
             }
