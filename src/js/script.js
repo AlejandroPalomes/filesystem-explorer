@@ -1,6 +1,7 @@
 loadSideMenu();
 requestContent('../../root');
 
+//Constants declaration
 const options = document.querySelectorAll('.rClickOption');
 const createOptions = document.querySelectorAll('.createOption');
 const contextMenu = document.querySelector('#rightClick');
@@ -11,6 +12,7 @@ const optionsBtn = document.querySelector('#optionsButton');
 const createFolderBtn = document.querySelector('#createFolderBtn');
 const uploadFileBtn = document.querySelector('#uploadFileConfirmBtn');
 const dropArea = document.querySelector('#contentWindow');
+const searchInput = document.querySelector('#searchFolder');
 
 //Drag and drop to upload file
 ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
@@ -53,6 +55,7 @@ function handleFiles(files) {
 };
 //End drag and drop
 
+//Listeners
 document.querySelector('body').addEventListener('click', e => {
     if (!e.target.classList.contains('rClickOption')) contextMenu.classList.add('d-none');
     if (!e.target.classList.contains('button_principal')) createMenu.classList.add('d-none');
@@ -75,6 +78,33 @@ uploadFileConfirmBtn.addEventListener('click', (e) => {
     $('#uploadFile').modal('hide');
     uploadFile(document.querySelector('#fileToUpload').files[0]);
 });
+
+searchInput.addEventListener('keyup', () => {
+    const form = new FormData();
+    const previousPath = document.querySelector('#breadcrumb').dataset.path;
+    form.file = searchInput.value;
+
+    if (searchInput.value.length) {
+        optionsButton.classList.add('d-none')
+        axios({
+            method: 'POST',
+            url: 'src/php/searchFile.php',
+            data: {
+                form
+            }
+        }).then((response) => {
+            document.querySelector('#folderDisplay').innerHTML = '';
+            document.querySelector('#archiveDisplay').innerHTML = '';
+
+            printBreadcrumb('../../root');
+            printFolder(response.data);
+        });
+    } else {
+        optionsButton.classList.remove('d-none')
+        requestContent(previousPath);
+    }
+
+})
 
 options.forEach(option => {
     option.addEventListener('click', e => {
@@ -128,6 +158,7 @@ createOptions.forEach(option => {
     })
 })
 
+//Functions
 function loadSideMenu() {
     axios({
         method: 'get',
@@ -209,13 +240,12 @@ function requestContent(folder, init = true) {
             form
         }
     }).then((response) => {
-        
-            document.querySelector('#folderDisplay').innerHTML = '';
-            document.querySelector('#archiveDisplay').innerHTML = '';
-            document.querySelector('#breadcrumb').dataset.path = form.path;
-            // printBreadcrumb(folder.dataset.path);
-            printBreadcrumb(form.path);
-            (typeof response.data === 'object') ? printFolder(response.data) : printFolder({});
+        document.querySelector('#folderDisplay').innerHTML = '';
+        document.querySelector('#archiveDisplay').innerHTML = '';
+        document.querySelector('#breadcrumb').dataset.path = form.path;
+        // printBreadcrumb(folder.dataset.path);
+        printBreadcrumb(form.path);
+        (typeof response.data === 'object') ? printFolder(response.data) : printFolder({});
     });
 }
 
@@ -421,7 +451,6 @@ function checkImgSrc(type) {
     return finalPath;
 }
 
-// Create Folder
 function createFolder() {
     let dirdata = new FormData();
     let folderName = document.getElementById('folderName').value;
@@ -445,47 +474,28 @@ function createFolder() {
     });
 }
 
-const searchInput = document.querySelector('#searchFolder');
-searchInput.addEventListener('keyup', () => {
-    const form = new FormData();
-    const previousPath = document.querySelector('#breadcrumb').dataset.path;
-    form.file = searchInput.value;
+function removeFile(path) {
+    const elements = path.split('/');
+    if(elements[elements.length - 1] === 'Trash' || elements[elements.length - 1] === 'System'){
+        alert("Sorry, you can't remove that folder");
+    }else{
+        const form = new FormData();
+        const parent = elements[elements.length - 2];
+        let URL = '';
+        (parent === 'Trash') ? URL = 'src/php/removeFile.php' : URL = 'src/php/moveFile.php';
+        form.path = path;
+        form.targetPath = '../../root/System/Trash/' + elements[elements.length - 1];
 
-    if (searchInput.value.length) {
-        optionsButton.classList.add('d-none')
         axios({
             method: 'POST',
-            url: 'src/php/searchFile.php',
+            url: URL,
             data: {
                 form
             }
         }).then((response) => {
-            document.querySelector('#folderDisplay').innerHTML = '';
-            document.querySelector('#archiveDisplay').innerHTML = '';
-
-            printBreadcrumb('../../root');
-            printFolder(response.data);
+            if (response.data) requestContent(document.querySelector('#breadcrumb').dataset.path);
         });
-    } else {
-        optionsButton.classList.remove('d-none')
-        requestContent(previousPath);
     }
-
-})
-
-function removeFile(path) {
-    const form = new FormData();
-    form.path = path;
-
-    axios({
-        method: 'POST',
-        url: 'src/php/removeFile.php',
-        data: {
-            form
-        }
-    }).then((response) => {
-        if (response.data) requestContent(document.querySelector('#breadcrumb').dataset.path);
-    });
 }
 
 function renameFile(path, name) {
@@ -556,22 +566,4 @@ function downloadFile(path){
         });
     }
 
-}
-
-function showPreview(path) {
-    // const form = new FormData();
-
-    // form.path = path;
-
-    // axios({
-    //     method: 'POST',
-    //     url: 'src/php/showPreview.php',
-    //     data: {
-    //         form
-    //     }
-    // }).then((response) => {
-    //     console.log(response.data)
-    // });
-    // console.log(path)
-    document.querySelector('#iframepdf').src = path;
 }
