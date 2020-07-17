@@ -222,8 +222,6 @@ function iterateFolders(folder, parent) {
                 }
             }
             iterateFolders(folder[e].content, folder[e].path);
-        } else {
-            //console.log(folder[e].name);
         }
     });
 }
@@ -493,7 +491,10 @@ function removeFile(path) {
                 form
             }
         }).then((response) => {
-            if (response.data) requestContent(document.querySelector('#breadcrumb').dataset.path);
+            if (response.data){
+                requestContent(document.querySelector('#breadcrumb').dataset.path);
+                loadSideMenu();
+            };
         });
     }
 }
