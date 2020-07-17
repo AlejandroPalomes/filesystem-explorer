@@ -90,7 +90,7 @@ options.forEach(option => {
                 contextMenu.classList.add('d-none');
                 break;
             case 'Download':
-                document.querySelector('#downloadFile').href = removeAllButLast(e.currentTarget.dataset.path, '.').replace('/', '').replace('/', '');
+                downloadFile(e.currentTarget.dataset.path);
                 contextMenu.classList.add('d-none');
                 break;
             case 'Preview':
@@ -435,22 +435,14 @@ function createFolder() {
         }
     }).then((response) => {
         $('#staticBackdrop').modal('hide')
-        // console.log(response.data);
-        // console.log(folderPath + '/' + folderName);
         if (response.data == folderPath + '/' + folderName) {
+            loadSideMenu();
             requestContent(folderPath);
-            //amagar el modal
         } else {
-            //posar missatge al modal de error
             console.log('Failed to create');
         }
     });
 }
-
-
-
-
-
 
 const searchInput = document.querySelector('#searchFolder');
 searchInput.addEventListener('keyup', () => {
@@ -537,6 +529,32 @@ function uploadFile(file) {
             //handle error
             console.log('response');
         });
+}
+
+function downloadFile(path){
+    let referenceFile = document.querySelector(`#fileDisplay [data-path="${path}"]`);
+    const currPath = document.querySelector('#breadcrumb').dataset.path;
+    if(!(referenceFile.dataset.type === 'directory')){
+        document.querySelector('#downloadFile').href = removeAllButLast(path, '.').replace('/', '').replace('/', '');
+    }else if((referenceFile.dataset.type === 'directory')){
+        const form = new FormData();
+        form.path = path;
+
+        axios({
+            method: 'POST',
+            url: 'src/php/downloadFolder.php',
+            data: {
+                form
+            }
+        }).then((response) => {
+            if(response.statusText === 'OK'){
+                document.querySelector('#downloadFolder').href = path.replace(/\./g, '').replace('/', '').replace('/', '') + '.zip';
+                document.querySelector('#downloadFolder').click();
+                removeFile(path + '.zip');
+            };
+        });
+    }
+
 }
 
 function showPreview(path) {
