@@ -209,12 +209,13 @@ function requestContent(folder, init = true) {
             form
         }
     }).then((response) => {
-        document.querySelector('#folderDisplay').innerHTML = '';
-        document.querySelector('#archiveDisplay').innerHTML = '';
-        document.querySelector('#breadcrumb').dataset.path = form.path;
-        // printBreadcrumb(folder.dataset.path);
-        printBreadcrumb(form.path);
-        printFolder(response.data);
+        
+            document.querySelector('#folderDisplay').innerHTML = '';
+            document.querySelector('#archiveDisplay').innerHTML = '';
+            document.querySelector('#breadcrumb').dataset.path = form.path;
+            // printBreadcrumb(folder.dataset.path);
+            printBreadcrumb(form.path);
+            (typeof response.data === 'object') ? printFolder(response.data) : printFolder({});
     });
 }
 
