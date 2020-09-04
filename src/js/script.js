@@ -287,15 +287,17 @@ function printFolder(folder) {
         `;
         (folder[e].type === 'directory') ? document.querySelector('#folderDisplay').append(div): document.querySelector('#archiveDisplay').append(div);
     });
-    document.querySelectorAll('h6').forEach(e=>{
-        if($(e).innerHeight() > 32){
-            console.log('hey!')
-            e.textContent = truncate(e.textContent, 20, false);
-        }
-    });
+    //! Disabled due to conflicts with download function (download reads and sends the innerText)
+    // document.querySelectorAll('h6').forEach(e=>{
+    //     if($(e).innerHeight() > 32){
+    //         console.log('hey!')
+    //         e.textContent = truncate(e.textContent, 20, false);
+    //     }
+    // });
     addListeners();
 }
 
+//! It's not being used due to conflicts with the download feature. Not deleted for future refactoring.
 function truncate(str, n, useWordBoundary) {
     if (str.length <= n) {
         return str;
@@ -335,6 +337,7 @@ function addListeners() {
 function openPreview(e, isPath = false){
     $('#mediaPlayer').modal('show');
     let referenceFile = document.querySelector(`#archiveDisplay [data-path="${e}"]`);
+    console.log(document.querySelector('#mediaPlayerTitle'))
     document.querySelector('#mediaPlayerTitle').innerText = isPath ? referenceFile.querySelector('h5').innerText : e.currentTarget.querySelector('h5').innerText;
     let playFile = null;
     let fileType = isPath ? referenceFile.dataset.type.toLowerCase() : e.currentTarget.dataset.type.toLowerCase();
