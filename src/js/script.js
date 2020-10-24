@@ -336,9 +336,8 @@ function addListeners() {
 
 function openPreview(e, isPath = false){
     $('#mediaPlayer').modal('show');
-    let referenceFile = document.querySelector(`#archiveDisplay [data-path="${e}"]`);
-    console.log(document.querySelector('#mediaPlayerTitle'))
-    document.querySelector('#mediaPlayerTitle').innerText = isPath ? referenceFile.querySelector('h5').innerText : e.currentTarget.querySelector('h5').innerText;
+    let referenceFile = document.querySelector(`#archiveDisplay [data-path="${e.currentTarget.dataset.path}"]`);
+    document.querySelector('#mediaPlayerTitle').innerText = isPath ? referenceFile.querySelector('h6').innerText : e.currentTarget.querySelector('h6').innerText;
     let playFile = null;
     let fileType = isPath ? referenceFile.dataset.type.toLowerCase() : e.currentTarget.dataset.type.toLowerCase();
 
